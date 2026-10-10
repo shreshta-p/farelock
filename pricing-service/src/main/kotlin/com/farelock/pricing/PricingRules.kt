@@ -5,6 +5,7 @@ import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Currency
 
 /**
  * The whole pricing "engine": two multipliers on top of the seeded base rate.
@@ -16,7 +17,7 @@ object PricingRules {
     private val LAST_MINUTE_MULTIPLIER = BigDecimal("1.10")
     private const val LAST_MINUTE_DAYS = 7
 
-    fun nightlyPrice(basePrice: BigDecimal, stayDate: LocalDate, today: LocalDate): BigDecimal {
+    fun nightlyPrice(basePrice: BigDecimal, currency: String, stayDate: LocalDate, today: LocalDate): BigDecimal {
         var price = basePrice
         if (stayDate.dayOfWeek == DayOfWeek.FRIDAY || stayDate.dayOfWeek == DayOfWeek.SATURDAY) {
             price = price.multiply(WEEKEND_MULTIPLIER)
@@ -24,7 +25,8 @@ object PricingRules {
         if (ChronoUnit.DAYS.between(today, stayDate) < LAST_MINUTE_DAYS) {
             price = price.multiply(LAST_MINUTE_MULTIPLIER)
         }
+        // Round to the currency's minor unit (2 for EUR/USD, 0 for JPY).
         // Banker's rounding avoids a systematic upward bias across many prices.
-        return price.setScale(2, RoundingMode.HALF_EVEN)
+        return price.setScale(Currency.getInstance(currency).defaultFractionDigits, RoundingMode.HALF_EVEN)
     }
 }

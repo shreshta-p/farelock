@@ -51,7 +51,7 @@ class PricingService(
 
     private fun priceOf(rate: RoomRate, stayDate: LocalDate) = RoomPrice(
         roomTypeId = rate.roomTypeId,
-        amount = PricingRules.nightlyPrice(rate.basePrice, stayDate, LocalDate.now(clock)),
+        amount = PricingRules.nightlyPrice(rate.basePrice, rate.currency, stayDate, LocalDate.now(clock)),
         currency = rate.currency,
     )
 

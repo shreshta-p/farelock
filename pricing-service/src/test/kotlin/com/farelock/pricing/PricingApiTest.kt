@@ -49,7 +49,7 @@ class PricingApiTest {
 
         assertEquals(200, first.status)
         assertEquals(first.body, second.body)
-        val expected = PricingRules.nightlyPrice(BigDecimal("180.00"), stayDate, LocalDate.now(ZoneOffset.UTC))
+        val expected = PricingRules.nightlyPrice(BigDecimal("180.00"), "EUR", stayDate, LocalDate.now(ZoneOffset.UTC))
         assertEquals(0, expected.compareTo(first.body["prices"][0]["amount"].decimalValue()))
         assertEquals("EUR", first.body["prices"][0]["currency"].asString())
         assertEquals(hitsBefore + 1, cacheCount("hit"))
