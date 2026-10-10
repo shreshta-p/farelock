@@ -1,0 +1,82 @@
+[
+  {
+    "qid": "Q1066676",
+    "wikidataLabel": "Plaza Hotel",
+    "latitude": 40.764528,
+    "longitude": -73.974444,
+    "inception": "1907",
+    "commonsFile": "New York - Manhattan - Plaza Hotel.jpg"
+  },
+  {
+    "qid": "Q689447",
+    "wikidataLabel": "Algonquin Hotel",
+    "latitude": 40.755833,
+    "longitude": -73.982333,
+    "inception": null,
+    "commonsFile": "W 44 St Sep 2021 01.jpg"
+  },
+  {
+    "qid": "Q1515595",
+    "wikidataLabel": "Hôtel Lutetia",
+    "latitude": 48.851354,
+    "longitude": 2.327203,
+    "inception": "1910",
+    "commonsFile": "Hôtel Lutetia, Paris 6e.jpg"
+  },
+  {
+    "qid": "Q3145649",
+    "wikidataLabel": "Hôtel Raphael",
+    "latitude": 48.87136,
+    "longitude": 2.293706,
+    "inception": "1925",
+    "commonsFile": "Entrée Hôtel Raphael.jpg"
+  },
+  {
+    "qid": "Q10343981",
+    "wikidataLabel": "Pestana Palace Lisboa",
+    "latitude": 38.703781,
+    "longitude": -9.186828,
+    "inception": null,
+    "commonsFile": "Pestana Palace Hotel IMG 2004.jpg"
+  },
+  {
+    "qid": "Q73760891",
+    "wikidataLabel": "Bairro Alto Hotel",
+    "latitude": 38.710299,
+    "longitude": -9.143315,
+    "inception": null,
+    "commonsFile": "Praça Luís de Camões - Lisbon - Apr 2007.jpg"
+  },
+  {
+    "qid": "Q11288502",
+    "wikidataLabel": "The Westin Miyako Kyoto",
+    "latitude": 35.008861,
+    "longitude": 135.787944,
+    "inception": "1900",
+    "commonsFile": "Westin-Miyako-Kyoto-01.jpg"
+  },
+  {
+    "qid": "Q11325962",
+    "wikidataLabel": "Hyatt Regency Kyoto",
+    "latitude": 34.988556,
+    "longitude": 135.773361,
+    "inception": "2006",
+    "commonsFile": "Hyatt Regency Kyoto.JPG"
+  },
+  {
+    "qid": "Q60452089",
+    "wikidataLabel": "Hilton Cape Town City Centre",
+    "latitude": -33.921631,
+    "longitude": 18.415853,
+    "inception": "2011",
+    "commonsFile": "Wikimania 2018, Cape Town ( 1050382).jpg"
+  },
+  {
+    "qid": "Q123243624",
+    "wikidataLabel": "Gran Hotel Ciudad de México",
+    "latitude": 19.43221,
+    "longitude": -99.13465,
+    "inception": null,
+    "commonsFile": "16 de Septiembre facade - Gran Hotel Ciudad de México - Mexico 2024 (3).jpg"
+  }
+]

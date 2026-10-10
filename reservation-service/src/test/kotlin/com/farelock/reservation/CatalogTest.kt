@@ -1,11 +1,24 @@
 package com.farelock.reservation
 
+import com.farelock.reservation.payment.BackgroundJobs
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CatalogTest : IntegrationTest() {
+    @Autowired lateinit var jobs: BackgroundJobs
+
+    @Test
+    fun `the inventory job stocks the booking window from seeded capacities, once`() {
+        jobs.extendInventory()
+
+        // The Plaza's Deluxe King (room type 101) has 40 rooms a night, for today through 90 days ahead.
+        val rows = countRows("SELECT count(*) FROM room_inventory WHERE room_type_id = 101 AND total = 40")
+        assertEquals(91, rows)
+        assertEquals(0, jobs.extendInventory()) // already stocked: nothing added, nothing overwritten
+    }
 
     @Test
     fun `search finds hotels by city with availability and a from-price`() {

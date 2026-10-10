@@ -1,0 +1,282 @@
+{
+  "hero": "photos/2P_ifaetDm0",
+  "destinations": {
+    "New York": "photos/A2CChTZvzTE",
+    "Paris": "photos/t9Td0zfDTwI",
+    "Lisbon": "photos/VHWyqXsWHg0",
+    "Kyoto": "photos/_UIN-pFfJ7c",
+    "Cape Town": "photos/bVovHygDlJI",
+    "Mexico City": "photos/oGRrpBX2ER4"
+  },
+  "credits": {
+    "hotels/the-plaza-exterior": {
+      "author": "Yarl",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:New_York_-_Manhattan_-_Plaza_Hotel.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "alt": "The Plaza, exterior"
+    },
+    "hotels/algonquin-exterior": {
+      "author": "Epicgenius",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:W_44_St_Sep_2021_01.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "alt": "The Algonquin Hotel, exterior"
+    },
+    "hotels/lutetia-exterior": {
+      "author": "Celette",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:H%C3%B4tel_Lutetia,_Paris_6e.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "alt": "Hôtel Lutetia, exterior"
+    },
+    "hotels/raphael-exterior": {
+      "author": "Laurent Bougras",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Entr%C3%A9e_H%C3%B4tel_Raphael.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "alt": "Hôtel Raphael, exterior"
+    },
+    "hotels/pestana-palace-exterior": {
+      "author": "sohrabah",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Pestana_Palace_Hotel_IMG_2004.jpg",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "alt": "Pestana Palace Lisboa, exterior"
+    },
+    "hotels/bairro-alto-hotel-exterior": {
+      "author": "Sergio Calleja (Life is a trip)",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Pra%C3%A7a_Lu%C3%ADs_de_Cam%C3%B5es_-_Lisbon_-_Apr_2007.jpg",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "alt": "Bairro Alto Hotel, exterior"
+    },
+    "hotels/westin-miyako-kyoto-exterior": {
+      "author": "J o",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Westin-Miyako-Kyoto-01.jpg",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "alt": "The Westin Miyako Kyoto, exterior"
+    },
+    "hotels/hyatt-regency-kyoto-exterior": {
+      "author": "moore",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Hyatt_Regency_Kyoto.JPG",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "alt": "Hyatt Regency Kyoto, exterior"
+    },
+    "hotels/hilton-cape-town-exterior": {
+      "author": "Matti Blume",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Wikimania_2018,_Cape_Town_(_1050382).jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "alt": "Hilton Cape Town City Centre, exterior"
+    },
+    "hotels/gran-hotel-cdmx-exterior": {
+      "author": "José Luiz",
+      "source": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:16_de_Septiembre_facade_-_Gran_Hotel_Ciudad_de_M%C3%A9xico_-_Mexico_2024_(3).jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "alt": "Gran Hotel Ciudad de México, exterior"
+    },
+    "photos/2P_ifaetDm0": {
+      "author": "Rod Long",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/2P_ifaetDm0",
+      "license": "Unsplash License",
+      "alt": "A wood-paneled hotel room with a bed, lamps, and a framed po"
+    },
+    "photos/A2CChTZvzTE": {
+      "author": "Jermaine Ee",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/A2CChTZvzTE",
+      "license": "Unsplash License",
+      "alt": "New York Central Park"
+    },
+    "photos/t9Td0zfDTwI": {
+      "author": "Alexander Kagan",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/t9Td0zfDTwI",
+      "license": "Unsplash License",
+      "alt": "high-rise buildings during daytime"
+    },
+    "photos/VHWyqXsWHg0": {
+      "author": "Liam McKay",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/VHWyqXsWHg0",
+      "license": "Unsplash License",
+      "alt": "city landscape photography during daytime"
+    },
+    "photos/_UIN-pFfJ7c": {
+      "author": "Sorasak",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/_UIN-pFfJ7c",
+      "license": "Unsplash License",
+      "alt": "two women in purple and pink kimono standing on street"
+    },
+    "photos/bVovHygDlJI": {
+      "author": "Patrick Ward",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/bVovHygDlJI",
+      "license": "Unsplash License",
+      "alt": "white and brown concrete buildings near gray mountain under "
+    },
+    "photos/oGRrpBX2ER4": {
+      "author": "Carlos Aguilar",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/oGRrpBX2ER4",
+      "license": "Unsplash License",
+      "alt": "aerial photo of dome building under blue sky at daytime"
+    },
+    "photos/QJMKyrud5l8": {
+      "author": "Cloris Ying",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/QJMKyrud5l8",
+      "license": "Unsplash License",
+      "alt": "brown leather sofa"
+    },
+    "photos/PibraWHb4h8": {
+      "author": "Jared Rice",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/PibraWHb4h8",
+      "license": "Unsplash License",
+      "alt": "white ceramic bathtub"
+    },
+    "photos/NxMuc8XaLZU": {
+      "author": "Antonio Araujo",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/NxMuc8XaLZU",
+      "license": "Unsplash License",
+      "alt": "A large bed sitting in a bedroom next to a window"
+    },
+    "photos/sbg3FuIRQcs": {
+      "author": "Hans",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/sbg3FuIRQcs",
+      "license": "Unsplash License",
+      "alt": "black and white uplight chandelier turned on near brown sofa"
+    },
+    "photos/1CcryZiF2PA": {
+      "author": "Steven Van Elk",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/1CcryZiF2PA",
+      "license": "Unsplash License",
+      "alt": "a room with a checkered floor and a bar"
+    },
+    "photos/6BJu73-UJpg": {
+      "author": "Christian Mackie",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/6BJu73-UJpg",
+      "license": "Unsplash License",
+      "alt": "white ceramic sink"
+    },
+    "photos/uocSnWMhnAs": {
+      "author": "Rhema Kallianpur",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/uocSnWMhnAs",
+      "license": "Unsplash License",
+      "alt": "gray table lamp beside white bed pillow"
+    },
+    "photos/Bj_rcSC5XfE": {
+      "author": "Emile Guillemot",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/Bj_rcSC5XfE",
+      "license": "Unsplash License",
+      "alt": "well-arrange room"
+    },
+    "photos/MOMg_740mgQ": {
+      "author": "The Anam",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/MOMg_740mgQ",
+      "license": "Unsplash License",
+      "alt": "brown wooden ceiling with brown wooden ceiling"
+    },
+    "photos/q-LqibnwN8Y": {
+      "author": "POOJAN THANEKAR",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/q-LqibnwN8Y",
+      "license": "Unsplash License",
+      "alt": "Modern bathroom with bathtub and toilet"
+    },
+    "photos/EYoK3eVKIiQ": {
+      "author": "Natalia Gusakova",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/EYoK3eVKIiQ",
+      "license": "Unsplash License",
+      "alt": "a bedroom with a large bed and a large window"
+    },
+    "photos/NYpT6hsGQoc": {
+      "author": "Frugal Flyer",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/NYpT6hsGQoc",
+      "license": "Unsplash License",
+      "alt": "A hotel bedroom with a large bed, patterned wall, and modern"
+    },
+    "photos/aI6Su7Mu9Ro": {
+      "author": "reisetopia",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/aI6Su7Mu9Ro",
+      "license": "Unsplash License",
+      "alt": "red throw pillow on white couch"
+    },
+    "photos/hYexJa2IrVo": {
+      "author": "Masato Tsuchiya",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/hYexJa2IrVo",
+      "license": "Unsplash License",
+      "alt": "a bathroom with a large bathtub next to a window"
+    },
+    "photos/67-sOi7mVIk": {
+      "author": "Sasha Kaunas",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/67-sOi7mVIk",
+      "license": "Unsplash License",
+      "alt": "white bed linen with brown wooden bed frame"
+    },
+    "photos/w72a24brINI": {
+      "author": "Olexandr Ignatov",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/w72a24brINI",
+      "license": "Unsplash License",
+      "alt": "gray bedsprea"
+    },
+    "photos/UX_Pn1L2FkQ": {
+      "author": "Yu-Yi Tsai",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/UX_Pn1L2FkQ",
+      "license": "Unsplash License",
+      "alt": "a hotel room with a bed, chair and television"
+    },
+    "photos/cAkJn5M13mo": {
+      "author": "Travis Chen",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/cAkJn5M13mo",
+      "license": "Unsplash License",
+      "alt": "a bed with white pillows and a phone on it"
+    },
+    "photos/6MYm-cUJRB0": {
+      "author": "Dave Photoz",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/6MYm-cUJRB0",
+      "license": "Unsplash License",
+      "alt": "white bed pillow on white bed"
+    },
+    "photos/GmW4hfTX0ns": {
+      "author": "Juliana Morales Ramírez",
+      "source": "Unsplash",
+      "url": "https://unsplash.com/photos/GmW4hfTX0ns",
+      "license": "Unsplash License",
+      "alt": "a hotel room with two beds and a couch"
+    }
+  }
+}

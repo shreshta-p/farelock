@@ -1,0 +1,12 @@
+{
+  "name": "farelock-import-hotels",
+  "private": true,
+  "type": "module",
+  "description": "One-time import of real hotel facts (Wikidata) and photos (Wikimedia Commons, Unsplash) into FareLock seed data",
+  "scripts": {
+    "import": "node import.mjs"
+  },
+  "dependencies": {
+    "sharp": "0.34.3"
+  }
+}

@@ -37,4 +37,19 @@ class InventoryRepository(private val jdbc: JdbcClient) {
                 .params(roomTypeId, stayDate).update() == 1
         ) { "No hold to convert for room type $roomTypeId on $stayDate" }
     }
+
+    /**
+     * Makes sure every room type has an inventory row for each night from today through
+     * [days] days ahead. Existing rows (with their holds and bookings) are left untouched.
+     */
+    fun extendWindow(today: LocalDate, days: Long): Int =
+        jdbc.sql(
+            """
+            INSERT INTO room_inventory (room_type_id, stay_date, total)
+            SELECT r.id, d::date, r.rooms_per_night
+            FROM room_types r, generate_series(?::date, ?::date, interval '1 day') AS d
+            WHERE r.rooms_per_night > 0
+            ON CONFLICT (room_type_id, stay_date) DO NOTHING
+            """
+        ).params(today, today.plusDays(days)).update()
 }

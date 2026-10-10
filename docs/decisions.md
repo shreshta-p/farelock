@@ -76,3 +76,12 @@ key, so a reservation can be charged at most once, no matter how often pay is re
 with its inventory update in the same transaction. A duplicate run simply finds nothing to change.
 **Simulator limit:** a real provider can complete a charge after we gave up and released the room. The fix
 would be a void/refund call. The simulator never records charges after the caller's deadline.
+
+### 11. Real hotel facts, demo inventory
+`tools/import-hotels` takes hotel identities and coordinates from Wikidata (CC0) and a real exterior
+photo of each building from Wikimedia Commons, recording its licence and author. Interiors and destination
+photos are Unsplash images labelled as representative. Rooms, prices and availability are FareLock's own
+demo data, because the correctness guarantees only hold for inventory FareLock owns. The script output
+(seed SQL, WebP images, credits) is committed, so builds never depend on those sites. Inventory rows are
+created by a job from `rooms_per_night`, keeping a rolling 90-day window filled. The seed therefore
+never goes stale.

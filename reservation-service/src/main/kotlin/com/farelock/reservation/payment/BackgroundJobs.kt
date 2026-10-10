@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.Clock
 import java.time.Duration
+import java.time.LocalDate
 
 /**
  * Two small recovery jobs. Neither holds locks or long transactions: every change is a
@@ -33,8 +34,14 @@ class BackgroundJobs(
     private val meters: MeterRegistry,
     @Value("\${farelock.jobs.reconcile-after:15s}") private val reconcileAfter: Duration,
     @Value("\${farelock.jobs.payment-not-found-after:2m}") private val notFoundAfter: Duration,
+    @Value("\${farelock.booking-window-days:90}") private val bookingWindowDays: Long,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
+
+    /** Keeps the bookable window (today + 90 days) stocked as the calendar moves forward. */
+    fun extendInventory(): Int =
+        inventory.extendWindow(LocalDate.now(clock), bookingWindowDays)
+            .also { if (it > 0) log.info("Added {} inventory rows", it) }
 
     /** Gives back rooms whose hold expired before the guest started paying. */
     fun expireHolds(): Int {
@@ -80,6 +87,11 @@ class BackgroundJobs(
 @EnableScheduling
 @ConditionalOnProperty("farelock.jobs.enabled", havingValue = "true", matchIfMissing = true)
 class JobSchedule(private val jobs: BackgroundJobs) {
+    @Scheduled(initialDelay = 0, fixedDelayString = "\${farelock.jobs.inventory-interval:1h}")
+    fun stockInventory() {
+        jobs.extendInventory()
+    }
+
     @Scheduled(fixedDelayString = "\${farelock.jobs.interval:10s}")
     fun run() {
         jobs.expireHolds()
@@ -91,5 +103,9 @@ class JobSchedule(private val jobs: BackgroundJobs) {
 @RestController
 class JobController(private val jobs: BackgroundJobs) {
     @PostMapping("/internal/jobs/run")
-    fun run() = mapOf("holdsExpired" to jobs.expireHolds(), "reconciliation" to jobs.reconcilePayments())
+    fun run() = mapOf(
+        "inventoryRowsAdded" to jobs.extendInventory(),
+        "holdsExpired" to jobs.expireHolds(),
+        "reconciliation" to jobs.reconcilePayments(),
+    )
 }

@@ -44,7 +44,7 @@ class CatalogRepository(private val jdbc: JdbcClient) {
         return jdbc.sql(
             """
             SELECT * FROM hotels
-            WHERE lower(city) LIKE ? OR lower(country) LIKE ? OR lower(name) LIKE ?
+            WHERE listed AND (lower(city) LIKE ? OR lower(country) LIKE ? OR lower(name) LIKE ?)
             ORDER BY star_rating DESC NULLS LAST, name
             """
         )
@@ -84,7 +84,7 @@ class CatalogRepository(private val jdbc: JdbcClient) {
     }
 
     fun destinations(): List<Destination> =
-        jdbc.sql("SELECT city, country, count(*) AS n FROM hotels GROUP BY city, country ORDER BY city")
+        jdbc.sql("SELECT city, country, count(*) AS n FROM hotels WHERE listed GROUP BY city, country ORDER BY city")
             .query { rs, _ -> Destination(rs.getString("city"), rs.getString("country"), rs.getInt("n")) }
             .list()
 

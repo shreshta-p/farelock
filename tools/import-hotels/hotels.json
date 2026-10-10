@@ -1,0 +1,137 @@
+{
+  "_comment": "Curated input for import.mjs. Real-world facts (official name, coordinates, address, opening year, exterior photo) are fetched live from Wikidata/Wikimedia Commons by QID. Descriptions, star ratings, amenities, rooms and base prices are FareLock demo data written by hand.",
+  "hotels": [
+    {
+      "id": 1, "qid": "Q1066676", "slug": "the-plaza", "city": "New York", "country": "United States", "currency": "USD",
+      "name": "The Plaza", "address": "768 Fifth Avenue, New York, NY 10019", "stars": 5,
+      "description": "A French Renaissance château on Fifth Avenue at Central Park South, opened in 1907 and now a National Historic Landmark. Rooms look out over the park or the avenue, and the lobby still feels like the city's front parlour.",
+      "amenities": ["Central Park views", "Afternoon tea", "Spa", "Fitness centre", "Concierge", "24-hour room service"],
+      "gallery": ["lobby:QJMKyrud5l8", "bath:PibraWHb4h8", "city:A2CChTZvzTE"],
+      "rooms": [
+        ["Deluxe King", "A quiet courtyard-facing room with a king bed, writing desk and marble bathroom.", "King", 34, 2, 695, 40, "room:2P_ifaetDm0"],
+        ["Park View Room", "Tall windows framing Central Park, a king bed and a reading chair.", "King", 39, 2, 895, 20, "room:NxMuc8XaLZU"],
+        ["One-Bedroom Suite", "Separate living room, dining table for four and a soaking tub.", "King + sofa bed", 74, 4, 1650, 6, "room:sbg3FuIRQcs"]
+      ]
+    },
+    {
+      "id": 2, "qid": "Q689447", "slug": "algonquin", "city": "New York", "country": "United States", "currency": "USD",
+      "name": "The Algonquin Hotel", "address": "59 West 44th Street, New York, NY 10036", "stars": 4,
+      "description": "A Midtown institution on West 44th Street, once home to the Round Table of writers and critics. The lobby is made for lingering, a few minutes' walk from the Broadway theatres.",
+      "amenities": ["Historic lobby bar", "Theatre district", "Fitness centre", "Pet friendly"],
+      "gallery": ["lobby:1CcryZiF2PA", "bath:6BJu73-UJpg", "city:A2CChTZvzTE"],
+      "rooms": [
+        ["Classic Queen", "Compact and well considered, with a queen bed and city views.", "Queen", 22, 2, 329, 40, "room:uocSnWMhnAs"],
+        ["Deluxe King", "A king bed, armchair and space to spread out after the theatre.", "King", 28, 2, 419, 25, "room:Bj_rcSC5XfE"],
+        ["Literary Suite", "Living area with a bookcase of Round Table-era titles.", "King + sofa bed", 46, 3, 689, 5, "room:2P_ifaetDm0"]
+      ]
+    },
+    {
+      "id": 3, "qid": "Q1515595", "slug": "lutetia", "city": "Paris", "country": "France", "currency": "EUR",
+      "name": "Hôtel Lutetia", "address": "45 Boulevard Raspail, 75006 Paris", "stars": 5,
+      "description": "The only grand palace hotel on the Left Bank, opened in 1910 on Boulevard Raspail facing the Square Boucicaut. Its Art Nouveau façade gives way to quiet rooms in Saint-Germain-des-Prés.",
+      "amenities": ["Saint-Germain-des-Prés", "Spa and pool", "Jazz bar", "Restaurant", "Concierge"],
+      "gallery": ["lobby:MOMg_740mgQ", "bath:q-LqibnwN8Y", "city:t9Td0zfDTwI"],
+      "rooms": [
+        ["Superior Room", "Soft greys and walnut, a king bed and Left Bank rooftops outside.", "King", 30, 2, 690, 30, "room:EYoK3eVKIiQ"],
+        ["Deluxe Room", "More space, a sofa by the window and a deep bathtub.", "King", 38, 2, 890, 20, "room:NYpT6hsGQoc"],
+        ["Junior Suite", "A separate sitting area with views towards the Eiffel Tower.", "King + sofa bed", 52, 3, 1390, 6, "room:sbg3FuIRQcs"]
+      ]
+    },
+    {
+      "id": 4, "qid": "Q3145649", "slug": "raphael", "city": "Paris", "country": "France", "currency": "EUR",
+      "name": "Hôtel Raphael", "address": "17 Avenue Kléber, 75116 Paris", "stars": 5,
+      "description": "A family-run hotel from 1925 on Avenue Kléber, a short walk from the Arc de Triomphe. Expect wood panelling, antique furniture and a rooftop terrace overlooking the city.",
+      "amenities": ["Rooftop terrace", "Near Arc de Triomphe", "Bar", "Restaurant"],
+      "gallery": ["lobby:QJMKyrud5l8", "bath:PibraWHb4h8", "city:t9Td0zfDTwI"],
+      "rooms": [
+        ["Classic Room", "Period furniture, a queen bed and a courtyard view.", "Queen", 24, 2, 520, 25, "room:aI6Su7Mu9Ro"],
+        ["Superior Room", "Larger, with a king bed and views along Avenue Kléber.", "King", 30, 2, 660, 20, "room:2P_ifaetDm0"],
+        ["Terrace Suite", "A private terrace with Paris rooftops in every direction.", "King", 48, 2, 1250, 4, "room:NxMuc8XaLZU"]
+      ]
+    },
+    {
+      "id": 5, "qid": "Q10343981", "slug": "pestana-palace", "city": "Lisbon", "country": "Portugal", "currency": "EUR",
+      "name": "Pestana Palace Lisboa", "address": "Rua Jau 54, 1300-314 Lisboa", "stars": 5,
+      "description": "A restored early-twentieth-century palace set in its own gardens in Alto de Santo Amaro, above the Tagus. Rooms sit in the palace and its newer wings around a garden pool.",
+      "amenities": ["Palace gardens", "Outdoor pool", "Spa", "Free parking", "Restaurant"],
+      "gallery": ["lobby:MOMg_740mgQ", "bath:hYexJa2IrVo", "city:VHWyqXsWHg0"],
+      "rooms": [
+        ["Superior Garden View", "Overlooking the gardens, with a king bed and balcony.", "King", 32, 2, 260, 40, "room:67-sOi7mVIk"],
+        ["Deluxe Room", "More room to unwind and a marble bathroom with bathtub.", "King", 40, 3, 340, 25, "room:EYoK3eVKIiQ"],
+        ["Palace Suite", "In the historic palace, with painted ceilings and a salon.", "King + sofa bed", 70, 4, 720, 4, "room:sbg3FuIRQcs"]
+      ]
+    },
+    {
+      "id": 6, "qid": "Q73760891", "slug": "bairro-alto-hotel", "city": "Lisbon", "country": "Portugal", "currency": "EUR",
+      "name": "Bairro Alto Hotel", "address": "Praça Luís de Camões 2, 1200-243 Lisboa", "stars": 5,
+      "description": "An eighteenth-century building on Praça Luís de Camões, where Chiado meets Bairro Alto. The rooftop terrace looks over the river, and the trams run past the front door.",
+      "amenities": ["Rooftop terrace", "River views", "Restaurant", "Chiado location"],
+      "gallery": ["lobby:1CcryZiF2PA", "bath:q-LqibnwN8Y", "city:VHWyqXsWHg0"],
+      "rooms": [
+        ["Classic Room", "Calm and light, with a queen bed and a view of the square.", "Queen", 20, 2, 290, 25, "room:w72a24brINI"],
+        ["Deluxe River View", "Tagus views and a king bed.", "King", 28, 2, 390, 15, "room:NYpT6hsGQoc"],
+        ["Bairro Alto Suite", "Corner suite with a living room and two balconies.", "King + sofa bed", 45, 3, 640, 4, "room:Bj_rcSC5XfE"]
+      ]
+    },
+    {
+      "id": 7, "qid": "Q11288502", "slug": "westin-miyako-kyoto", "city": "Kyoto", "country": "Japan", "currency": "JPY",
+      "name": "The Westin Miyako Kyoto", "address": "1 Awataguchi Kachōchō, Higashiyama-ku, Kyoto 605-0052", "stars": 5,
+      "description": "Founded in 1900 on the forested slopes of Higashiyama, a short walk from Nanzen-ji and the Philosopher's Path. Rooms look across the city or into the hotel's own gardens.",
+      "amenities": ["Japanese gardens", "Spa", "Indoor pool", "Near Nanzen-ji", "Restaurants"],
+      "gallery": ["lobby:QJMKyrud5l8", "bath:hYexJa2IrVo", "city:_UIN-pFfJ7c"],
+      "rooms": [
+        ["Deluxe Twin", "Two beds, light timber and views over the city.", "Two singles", 32, 2, 42000, 40, "room:UX_Pn1L2FkQ"],
+        ["Deluxe King", "A king bed facing the gardens.", "King", 32, 2, 46000, 30, "room:cAkJn5M13mo"],
+        ["Japanese Suite", "Tatami living room, futon or bed, and a cypress bath.", "King or futons", 68, 4, 98000, 4, "room:6MYm-cUJRB0"]
+      ]
+    },
+    {
+      "id": 8, "qid": "Q11325962", "slug": "hyatt-regency-kyoto", "city": "Kyoto", "country": "Japan", "currency": "JPY",
+      "name": "Hyatt Regency Kyoto", "address": "644-2 Sanjūsangendō-mawari, Higashiyama-ku, Kyoto 605-0941", "stars": 4,
+      "description": "Across the street from Sanjūsangen-dō temple in Higashiyama, opened in 2006. Kyoto textiles and woodwork set the tone, and Gion is a short walk north.",
+      "amenities": ["Opposite Sanjūsangen-dō", "Spa", "Fitness centre", "Restaurants"],
+      "gallery": ["lobby:1CcryZiF2PA", "bath:6BJu73-UJpg", "city:_UIN-pFfJ7c"],
+      "rooms": [
+        ["Standard King", "Kimono-fabric headboard and a king bed.", "King", 31, 2, 33000, 40, "room:uocSnWMhnAs"],
+        ["Deluxe Twin", "Two double beds and a deep soaking tub.", "Two doubles", 36, 3, 39000, 25, "room:UX_Pn1L2FkQ"],
+        ["Regency Suite", "Separate lounge and dining area for longer stays.", "King + sofa bed", 66, 4, 82000, 4, "room:GmW4hfTX0ns"]
+      ]
+    },
+    {
+      "id": 9, "qid": "Q60452089", "slug": "hilton-cape-town", "city": "Cape Town", "country": "South Africa", "currency": "ZAR",
+      "name": "Hilton Cape Town City Centre", "address": "126 Buitengracht Street, Cape Town City Centre, 8001", "stars": 4,
+      "description": "On Buitengracht Street in the City Bowl, opened in 2011, with Table Mountain behind and the colourful houses of Bo-Kaap next door. The V&A Waterfront is ten minutes away.",
+      "amenities": ["Table Mountain views", "Outdoor pool", "Fitness centre", "Restaurant", "Parking"],
+      "gallery": ["lobby:MOMg_740mgQ", "bath:q-LqibnwN8Y", "city:bVovHygDlJI"],
+      "rooms": [
+        ["King Room", "A king bed and city or mountain views.", "King", 30, 2, 2600, 40, "room:w72a24brINI"],
+        ["Executive King", "Higher floors and access to the executive lounge.", "King", 34, 2, 3400, 25, "room:67-sOi7mVIk"],
+        ["Table Mountain Suite", "Corner suite with a separate lounge facing the mountain.", "King + sofa bed", 60, 4, 6200, 4, "room:EYoK3eVKIiQ"]
+      ]
+    },
+    {
+      "id": 10, "qid": "Q123243624", "slug": "gran-hotel-cdmx", "city": "Mexico City", "country": "Mexico", "currency": "MXN",
+      "name": "Gran Hotel Ciudad de México", "address": "Avenida 16 de Septiembre 82, Centro Histórico, 06000 Ciudad de México", "stars": 4,
+      "description": "Steps from the Zócalo in the Centro Histórico, under a famous Art Nouveau stained-glass canopy. The terrace restaurant looks across the square to the cathedral.",
+      "amenities": ["Stained-glass atrium", "Zócalo terrace", "Restaurant", "Historic centre"],
+      "gallery": ["lobby:1CcryZiF2PA", "bath:6BJu73-UJpg", "city:oGRrpBX2ER4"],
+      "rooms": [
+        ["Standard Room", "Classic furnishings and a queen bed.", "Queen", 26, 2, 3200, 40, "room:aI6Su7Mu9Ro"],
+        ["Deluxe King", "A king bed and views over the historic centre.", "King", 32, 2, 4100, 25, "room:NYpT6hsGQoc"],
+        ["Zócalo Suite", "Balcony suite overlooking the Zócalo and the cathedral.", "King + sofa bed", 55, 4, 7800, 4, "room:Bj_rcSC5XfE"]
+      ]
+    }
+  ],
+  "loadTestHotel": {
+    "id": 99, "name": "FareLock Load Test Hotel", "city": "Loadtest", "country": "Nowhere", "currency": "USD",
+    "rooms": [
+      [9901, "Contended Room", 10, 100],
+      [9902, "Bulk Room", 100000, 100]
+    ]
+  },
+  "heroPhoto": "2P_ifaetDm0",
+  "destinationPhotos": {
+    "New York": "A2CChTZvzTE", "Paris": "t9Td0zfDTwI", "Lisbon": "VHWyqXsWHg0",
+    "Kyoto": "_UIN-pFfJ7c", "Cape Town": "bVovHygDlJI", "Mexico City": "oGRrpBX2ER4"
+  }
+}
