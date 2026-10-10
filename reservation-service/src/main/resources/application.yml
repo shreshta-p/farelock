@@ -7,9 +7,11 @@ spring:
   config:
     import: optional:file:../.env[.properties]
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${POSTGRES_PORT:5442}/farelock?currentSchema=reservation
+    url: jdbc:postgresql://${DB_HOST:localhost}:${POSTGRES_PORT:5442}/farelock
     username: reservation_svc
     password: ${RESERVATION_DB_PASSWORD}
+    hikari:
+      schema: reservation
   flyway:
     schemas: reservation,payment_provider
     default-schema: reservation

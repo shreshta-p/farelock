@@ -8,9 +8,11 @@ spring:
   config:
     import: optional:file:../.env[.properties]
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${POSTGRES_PORT:5442}/farelock?currentSchema=pricing
+    url: jdbc:postgresql://${DB_HOST:localhost}:${POSTGRES_PORT:5442}/farelock
     username: pricing_svc
     password: ${PRICING_DB_PASSWORD}
+    hikari:
+      schema: pricing
   flyway:
     schemas: pricing
     default-schema: pricing
