@@ -20,7 +20,11 @@ object TestHotel {
 }
 
 /** Base class: the full app on a random port, backed by a real Postgres container. */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    // Jobs are triggered explicitly by tests; short payment timeout keeps timeout tests fast.
+    properties = ["farelock.jobs.enabled=false", "farelock.payment.timeout=500ms", "farelock.payment.provider-slow-response=3s"],
+)
 @Import(TestcontainersConfiguration::class)
 abstract class IntegrationTest {
     @LocalServerPort var port = 0

@@ -3,6 +3,7 @@ package com.farelock.reservation.booking
 import com.farelock.reservation.auth.CURRENT_USER
 import com.farelock.reservation.auth.User
 import com.farelock.reservation.common.ApiException
+import com.farelock.reservation.payment.PaymentService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -29,9 +30,14 @@ data class CreateReservationBody(
     @field:NotBlank @field:Size(max = 100) val guestName: String?,
 )
 
+data class PaymentBody(@field:NotBlank val paymentToken: String?)
+
 @RestController
 @RequestMapping("/api/reservations")
-class ReservationController(private val reservations: ReservationService) {
+class ReservationController(
+    private val reservations: ReservationService,
+    private val payments: PaymentService,
+) {
 
     @PostMapping
     suspend fun create(
@@ -46,6 +52,16 @@ class ReservationController(private val reservations: ReservationService) {
         // The body is already-serialized JSON: either fresh, or the stored answer to an earlier identical request.
         val response = reservations.create(user, idempotencyKey, request)
         return ResponseEntity.status(response.status).contentType(MediaType.APPLICATION_JSON).body(response.body)
+    }
+
+    @PostMapping("/{id}/payment")
+    suspend fun pay(
+        @RequestAttribute(CURRENT_USER) user: User,
+        @PathVariable id: UUID,
+        @Valid @RequestBody body: PaymentBody,
+    ): ResponseEntity<Reservation> {
+        val result = payments.pay(user, id, body.paymentToken!!)
+        return ResponseEntity.status(result.httpStatus).body(result.reservation)
     }
 
     @GetMapping

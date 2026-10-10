@@ -12,6 +12,7 @@ spring:
     password: ${RESERVATION_DB_PASSWORD}
     hikari:
       schema: reservation
+      connection-timeout: 2000 # fail fast (ms) if the database is unreachable
   flyway:
     schemas: reservation,payment_provider
     default-schema: reservation

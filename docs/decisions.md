@@ -60,3 +60,19 @@ Spring MVC + JDBC stay blocking. Coroutines are used for (a) concurrent fan-out:
 every hotel's prices at once, and hotel detail loads the catalog and prices in parallel; (b) the
 Pricing call in create-reservation; and later (c) bounding the payment call with `withTimeout`.
 Rule: a transaction lives entirely inside one `io { }` block and never crosses a suspension point.
+
+### 10. Payments: explicit states, provider as the source of truth, reconciliation instead of retries
+States: `HELD → PAYMENT_PENDING → CONFIRMED`, or `→ RELEASED` (EXPIRED / DECLINED / PAYMENT_NOT_FOUND).
+The reservation moves to `PAYMENT_PENDING` **before** calling the provider, so hold expiry can never
+give away a room that might be paid for. The provider call has no transaction open and is bounded with
+`withTimeout` + `runInterruptible`. A timeout means "unknown", not "failed", and the API answers
+`202 PAYMENT_VERIFYING`. The reconciler later asks the provider (`lookup(reservationId)`) and applies the
+real outcome. Inventory is released only after a confirmed decline, or once the provider still has no
+record of the charge after a 2-minute grace period. The reservation id is the provider's idempotency
+key, so a reservation can be charged at most once, no matter how often pay is retried.
+**Pay has no Idempotency-Key:** the state machine plus the provider key already make it safe to retry.
+**No locks in jobs:** the reconciler must not hold a transaction while it asks the provider, so instead of
+`FOR UPDATE SKIP LOCKED` every change is a conditional transition (`WHERE status = 'PAYMENT_PENDING'`)
+with its inventory update in the same transaction. A duplicate run simply finds nothing to change.
+**Simulator limit:** a real provider can complete a charge after we gave up and released the room. The fix
+would be a void/refund call. The simulator never records charges after the caller's deadline.

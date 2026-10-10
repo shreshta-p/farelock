@@ -90,13 +90,12 @@ class ReservationRepository(private val jdbc: JdbcClient) {
         ).params(id, Timestamp.from(now)).update() == 1
 
     /**
-     * Locks a batch of reservations for a background job. SKIP LOCKED means two job runs
-     * (or two service instances) never process the same row at the same time.
-     * Must be called inside a transaction.
+     * Unfinished reservations for the background jobs, oldest first. No row locks: the jobs
+     * change rows only through [transition], so two runs racing on one row cannot both win.
      */
-    fun lockBatch(status: ReservationStatus, olderThanColumn: String, cutoff: Instant, limit: Int): List<Reservation> {
-        require(olderThanColumn in setOf("hold_expires_at", "updated_at"))
-        return jdbc.sql("$SELECT WHERE r.status = ? AND r.$olderThanColumn < ? ORDER BY r.$olderThanColumn LIMIT ? FOR UPDATE OF r SKIP LOCKED")
+    fun findOlderThan(status: ReservationStatus, column: String, cutoff: Instant, limit: Int): List<Reservation> {
+        require(column in setOf("hold_expires_at", "updated_at")) // never interpolate untrusted input
+        return jdbc.sql("$SELECT WHERE r.status = ? AND r.$column < ? ORDER BY r.$column LIMIT ?")
             .params(status.name, Timestamp.from(cutoff), limit)
             .query { rs, _ -> rs.toReservation() }
             .list()

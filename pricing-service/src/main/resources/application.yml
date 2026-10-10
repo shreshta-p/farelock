@@ -13,6 +13,7 @@ spring:
     password: ${PRICING_DB_PASSWORD}
     hikari:
       schema: pricing
+      connection-timeout: 2000 # fail fast (ms) if the database is unreachable
   flyway:
     schemas: pricing
     default-schema: pricing
