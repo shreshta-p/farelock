@@ -1,0 +1,26 @@
+# Secrets
+.env
+*.env.local
+
+# Gradle / JVM
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.kotlin/
+out/
+bin/
+
+# Node
+node_modules/
+dist/
+*.log
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Load test output
+load-tests/results/

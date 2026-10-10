@@ -1,0 +1,15 @@
+server:
+  port: ${RESERVATION_PORT:8082}
+
+spring:
+  application:
+    name: reservation-service
+  config:
+    import: optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${POSTGRES_PORT:5442}/farelock?currentSchema=reservation
+    username: reservation_svc
+    password: ${RESERVATION_DB_PASSWORD}
+  flyway:
+    schemas: reservation,payment_provider
+    default-schema: reservation
