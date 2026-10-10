@@ -20,6 +20,8 @@ fun sessionToken(request: HttpServletRequest): String? =
 @Component
 class AuthInterceptor(private val auth: AuthService) : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        // Suspend handlers complete via an async re-dispatch that runs interceptors again; the user is already known.
+        if (request.getAttribute(CURRENT_USER) != null) return true
         val user = sessionToken(request)?.let { auth.userForSession(it) }
             ?: throw ApiException(HttpStatus.UNAUTHORIZED, "UNAUTHENTICATED", "Please log in")
         request.setAttribute(CURRENT_USER, user)

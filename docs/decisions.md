@@ -37,3 +37,26 @@ is nothing to gain from stateless tokens here and revocation would get harder. B
 `spring-security-crypto` alone. The full Spring Security filter chain would be more to explain than
 the ~30 lines of interceptor it replaces. **CSRF:** SameSite=Lax stops browsers sending the cookie on
 cross-site POSTs, and every state-changing endpoint requires a JSON body.
+
+### 7. Inventory: one row per room type per night, changed only by conditional UPDATEs
+`UPDATE room_inventory SET held = held + 1 WHERE ... AND held + booked < total` is atomic.
+Postgres row-locks during the statement, so 100 concurrent requests for 10 rooms produce exactly
+10 successes (`ConcurrencyTest`). A `CHECK (held + booked <= total)` constraint backs it up.
+**Why not `SELECT ... FOR UPDATE` then UPDATE?** Two statements and a held lock to do what one
+statement does. **Why not optimistic versioning?** Retries under contention, for no benefit here.
+**Tradeoff:** every booking for the same room type and night serialises on one row. That is fine
+at hotel-booking volumes. A very hot row could be split into buckets later.
+
+### 8. Idempotency keys in Postgres, response stored in the business transaction
+`(user_id, idempotency_key)` is the primary key, so concurrent duplicates cannot both claim it.
+The reservation insert and the "COMPLETED + response body" update commit in **one** transaction,
+so there is never a booking without its stored response, or the reverse. Definite 4xx answers
+(sold out, quote expired) are stored and replayed. Temporary failures (pricing down, 5xx) delete
+the key so the client can retry. A key stuck `IN_PROGRESS` for over 60s (process crashed) can be
+taken over. All remote calls have timeouts well under that. Keys are scoped per user.
+
+### 9. Coroutines only where they buy something
+Spring MVC + JDBC stay blocking. Coroutines are used for (a) concurrent fan-out: search fetches
+every hotel's prices at once, and hotel detail loads the catalog and prices in parallel; (b) the
+Pricing call in create-reservation; and later (c) bounding the payment call with `withTimeout`.
+Rule: a transaction lives entirely inside one `io { }` block and never crosses a suspension point.
