@@ -29,3 +29,11 @@ miss. Lettuce rejects commands immediately while disconnected, and after a failu
 skipped for 5s, so an outage does not add a timeout to every request.
 **Tradeoff:** a price cached just before midnight may keep yesterday's "last-minute" multiplier
 for up to 60s. That is acceptable because the *quote* is what a booking is charged against.
+
+### 6. Sessions: opaque token in an HttpOnly cookie, hash in Postgres
+On login a random 256-bit token goes into a `HttpOnly; SameSite=Lax` cookie, and only its SHA-256
+hash is stored. Sessions survive restarts and can be revoked by deleting a row. No JWTs, because there
+is nothing to gain from stateless tokens here and revocation would get harder. BCrypt comes from
+`spring-security-crypto` alone. The full Spring Security filter chain would be more to explain than
+the ~30 lines of interceptor it replaces. **CSRF:** SameSite=Lax stops browsers sending the cookie on
+cross-site POSTs, and every state-changing endpoint requires a JSON body.
