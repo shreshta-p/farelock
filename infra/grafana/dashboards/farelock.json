@@ -7,7 +7,7 @@
   "timezone": "browser",
   "schemaVersion": 41,
   "version": 1,
-  "refresh": "5s",
+  "refresh": "30s",
   "time": {
     "from": "now-15m",
     "to": "now"
@@ -114,7 +114,8 @@
             "stacking": {
               "mode": "none"
             }
-          }
+          },
+          "noValue": "0"
         },
         "overrides": []
       },
@@ -166,7 +167,8 @@
             "stacking": {
               "mode": "none"
             }
-          }
+          },
+          "noValue": "0"
         },
         "overrides": []
       },
@@ -489,9 +491,10 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "stacking": {
-              "mode": "normal"
+              "mode": "none"
             }
-          }
+          },
+          "noValue": "0"
         },
         "overrides": []
       },
@@ -633,7 +636,8 @@
             "stacking": {
               "mode": "none"
             }
-          }
+          },
+          "noValue": "0"
         },
         "overrides": []
       },
@@ -683,9 +687,10 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "stacking": {
-              "mode": "normal"
+              "mode": "none"
             }
-          }
+          },
+          "noValue": "0"
         },
         "overrides": []
       },
@@ -737,7 +742,8 @@
             "stacking": {
               "mode": "none"
             }
-          }
+          },
+          "noValue": "0"
         },
         "overrides": []
       },
