@@ -41,7 +41,9 @@ function Header() {
     navigate('/')
   }
 
-  const loginLink = `/login?next=${encodeURIComponent(location.pathname + location.search)}`
+  // Come back to the current page after signing in (but not to the login page itself).
+  const onAuthPage = location.pathname === '/login' || location.pathname === '/register'
+  const loginLink = onAuthPage ? '/login' : `/login?next=${encodeURIComponent(location.pathname + location.search)}`
 
   return (
     <header className="sticky top-0 z-30 border-b border-line/80 bg-paper/95 backdrop-blur-[2px]">
