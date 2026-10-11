@@ -15,9 +15,12 @@ import java.util.concurrent.ConcurrentHashMap
 object FakePricing {
     private val quotes = ConcurrentHashMap<UUID, String>()
     @Volatile var down = false
+    /** The X-Request-Id header of the last quote request, to check correlation ids are forwarded. */
+    @Volatile var lastRequestId: String? = null
 
     private val server = HttpServer.create(InetSocketAddress("localhost", 0), 0).apply {
         createContext("/api/quotes/") { exchange ->
+            lastRequestId = exchange.requestHeaders.getFirst("X-Request-Id")
             val id = UUID.fromString(exchange.requestURI.path.substringAfterLast('/'))
             val body = quotes[id]
             val status = when {

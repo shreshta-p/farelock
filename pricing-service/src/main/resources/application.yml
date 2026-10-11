@@ -23,3 +23,24 @@ spring:
       port: ${REDIS_PORT:6390}
       timeout: 100ms
       connect-timeout: 200ms
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      # Histogram buckets let Prometheus compute p50/p95/p99 across instances.
+      percentiles-histogram:
+        http.server.requests: true
+        http.client.requests: true
+
+logging:
+  structured:
+    # JSON log lines (Elastic Common Schema) that include the requestId from the MDC.
+    # Set LOG_FORMAT= (empty) for plain text while developing.
+    format:
+      console: ${LOG_FORMAT:ecs}

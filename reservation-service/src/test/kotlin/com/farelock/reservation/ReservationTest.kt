@@ -126,4 +126,17 @@ class ReservationTest : IntegrationTest() {
         assertEquals(200, owner.get("/api/reservations/$id").status)
         assertEquals(1, owner.get("/api/reservations").body.size())
     }
+
+    @Test
+    fun `the request id is echoed back and forwarded to the pricing service`() {
+        seedHotel(rooms = 3)
+        val guest = loggedInClient()
+        val body = reservationBody(FakePricing.quote(TestHotel.ROOM_TYPE_ID, stayDate))
+
+        val res = guest.post("/api/reservations", body, idempotencyKey = "k", requestId = "trace-abc-123")
+
+        assertEquals("trace-abc-123", res.headers.getFirst("X-Request-Id"))
+        // The quote call ran on a coroutine IO thread; the id must still have reached it.
+        assertEquals("trace-abc-123", FakePricing.lastRequestId)
+    }
 }

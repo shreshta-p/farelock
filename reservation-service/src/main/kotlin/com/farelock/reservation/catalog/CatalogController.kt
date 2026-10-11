@@ -1,5 +1,6 @@
 package com.farelock.reservation.catalog
 
+import com.farelock.reservation.common.withRequestContext
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,9 +18,9 @@ class CatalogController(private val catalog: CatalogService) {
 
     @GetMapping("/hotels")
     suspend fun search(@RequestParam(required = false) destination: String?, @RequestParam date: LocalDate) =
-        catalog.search(destination, date)
+        withRequestContext { catalog.search(destination, date) }
 
     @GetMapping("/hotels/{id}")
     suspend fun detail(@PathVariable id: Long, @RequestParam date: LocalDate) =
-        catalog.detail(id, date)
+        withRequestContext { catalog.detail(id, date) }
 }

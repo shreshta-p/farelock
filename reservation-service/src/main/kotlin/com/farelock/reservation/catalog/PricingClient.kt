@@ -2,7 +2,9 @@ package com.farelock.reservation.catalog
 
 import com.farelock.reservation.common.ApiException
 import com.farelock.reservation.common.io
+import com.farelock.reservation.common.RequestIdFilter
 import org.slf4j.LoggerFactory
+import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.client.JdkClientHttpRequestFactory
@@ -44,6 +46,11 @@ class PricingClient(
 
     private val http = builder
         .baseUrl(baseUrl)
+        // Pass our correlation id along so both services' logs share it.
+        .requestInterceptor { request, body, execution ->
+            MDC.get(RequestIdFilter.MDC_KEY)?.let { request.headers.set(RequestIdFilter.HEADER, it) }
+            execution.execute(request, body)
+        }
         .requestFactory(
             JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build())
                 .apply { setReadTimeout(timeout) }

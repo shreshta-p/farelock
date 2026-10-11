@@ -85,3 +85,15 @@ demo data, because the correctness guarantees only hold for inventory FareLock o
 (seed SQL, WebP images, credits) is committed, so builds never depend on those sites. Inventory rows are
 created by a job from `rooms_per_night`, keeping a rolling 90-day window filled. The seed therefore
 never goes stale.
+
+### 12. Observability: built-in metrics first, a few low-cardinality counters, one dashboard
+Actuator + Micrometer provide HTTP latency histograms (p50/p95/p99), JVM, CPU and HikariCP pool metrics
+for free. Custom counters cover only what the platform can't see: reservation outcomes (including
+`sold_out` = inventory exhausted), idempotency replays/conflicts, payment outcomes, reconciliation results,
+expired holds and cache hits/misses/errors. Every tag has a handful of fixed values. There are never user,
+reservation or idempotency-key labels, which would explode Prometheus' series count.
+Each request gets an `X-Request-Id` (taken from the caller or generated), which goes into the logging MDC
+and is forwarded to Pricing. Logs are JSON (ECS). Because MDC is thread-local and coroutines hop threads,
+suspend handlers wrap their body in `withContext(MDCContext())`, which restores the MDC on every resume.
+Prometheus and Grafana run under the optional `monitoring` Compose profile, with the dashboard provisioned
+from `infra/grafana/dashboards/farelock.json`.

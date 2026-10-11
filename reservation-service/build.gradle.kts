@@ -30,6 +30,7 @@ dependencies {
     // Coroutines: suspend controller functions (the reactor bridge is required by Spring MVC for this).
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j") // carries the request id across threads
     // Only the BCrypt password encoder, not the full Spring Security filter chain.
     implementation("org.springframework.security:spring-security-crypto")
     implementation("tools.jackson.module:jackson-module-kotlin")

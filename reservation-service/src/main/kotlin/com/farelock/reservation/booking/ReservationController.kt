@@ -3,6 +3,7 @@ package com.farelock.reservation.booking
 import com.farelock.reservation.auth.CURRENT_USER
 import com.farelock.reservation.auth.User
 import com.farelock.reservation.common.ApiException
+import com.farelock.reservation.common.withRequestContext
 import com.farelock.reservation.payment.PaymentService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
@@ -50,7 +51,7 @@ class ReservationController(
         }
         val request = CreateReservationRequest(body.quoteId!!, body.roomTypeId!!, body.stayDate!!, body.guestName!!)
         // The body is already-serialized JSON: either fresh, or the stored answer to an earlier identical request.
-        val response = reservations.create(user, idempotencyKey, request)
+        val response = withRequestContext { reservations.create(user, idempotencyKey, request) }
         return ResponseEntity.status(response.status).contentType(MediaType.APPLICATION_JSON).body(response.body)
     }
 
@@ -60,7 +61,7 @@ class ReservationController(
         @PathVariable id: UUID,
         @Valid @RequestBody body: PaymentBody,
     ): ResponseEntity<Reservation> {
-        val result = payments.pay(user, id, body.paymentToken!!)
+        val result = withRequestContext { payments.pay(user, id, body.paymentToken!!) }
         return ResponseEntity.status(result.httpStatus).body(result.reservation)
     }
 

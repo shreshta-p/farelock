@@ -17,10 +17,11 @@ class TestClient(port: Int, private val json: JsonMapper) {
 
     fun get(path: String) = send(http.get().uri(path))
 
-    fun post(path: String, body: String = "{}", idempotencyKey: String? = null) = send(
+    fun post(path: String, body: String = "{}", idempotencyKey: String? = null, requestId: String? = null) = send(
         http.post().uri(path)
             .contentType(MediaType.APPLICATION_JSON)
             .apply { if (idempotencyKey != null) header("Idempotency-Key", idempotencyKey) }
+            .apply { if (requestId != null) header("X-Request-Id", requestId) }
             .body(body)
     )
 

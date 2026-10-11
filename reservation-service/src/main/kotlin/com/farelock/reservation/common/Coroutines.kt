@@ -1,6 +1,7 @@
 package com.farelock.reservation.common
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.slf4j.MDCContext
 import kotlinx.coroutines.withContext
 
 /**
@@ -11,3 +12,9 @@ import kotlinx.coroutines.withContext
  * to a single thread, which Spring's thread-local transaction handling requires.
  */
 suspend fun <T> io(block: () -> T): T = withContext(Dispatchers.IO) { block() }
+
+/**
+ * Wraps a suspend controller body so the logging MDC (the request id) follows the coroutine
+ * onto whichever threads it resumes on. Every `io { }` and `async { }` inside inherits it.
+ */
+suspend fun <T> withRequestContext(block: suspend () -> T): T = withContext(MDCContext()) { block() }
