@@ -62,5 +62,22 @@ services:
       - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on: [prometheus]
 
+  # --- k6 load tests: docker compose --env-file .env --profile loadtest run --rm k6 run /scripts/mixed.js ---
+  k6:
+    image: grafana/k6:1.2.3
+    profiles: [loadtest]
+    volumes:
+      - ./load-tests:/scripts:ro
+    environment:
+      RESERVATION_URL: ${K6_RESERVATION_URL:-http://host.docker.internal:8082}
+      PRICING_URL: ${K6_PRICING_URL:-http://host.docker.internal:8081}
+      VUS: ${VUS:-}
+      DURATION: ${DURATION:-}
+      # With the monitoring profile running, add "-o experimental-prometheus-rw" to also see k6's own metrics.
+      K6_PROMETHEUS_RW_SERVER_URL: http://prometheus:9090/api/v1/write
+      K6_PROMETHEUS_RW_TREND_STATS: "p(50),p(95),p(99)"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 volumes:
   postgres-data:
