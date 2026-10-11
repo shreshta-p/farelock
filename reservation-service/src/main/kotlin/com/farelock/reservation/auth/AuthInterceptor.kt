@@ -32,6 +32,6 @@ class AuthInterceptor(private val auth: AuthService) : HandlerInterceptor {
 @Configuration
 class WebConfig(private val authInterceptor: AuthInterceptor) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(authInterceptor).addPathPatterns("/api/me", "/api/reservations", "/api/reservations/**")
+        registry.addInterceptor(authInterceptor).addPathPatterns("/api/reservations", "/api/reservations/**")
     }
 }

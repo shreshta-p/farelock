@@ -51,12 +51,13 @@ class AuthTest : IntegrationTest() {
         assertEquals("", c.sessionCookie!!.substringAfter("="), "cookie should be cleared")
         // The old token is invalid on the server too, not just cleared in the browser.
         c.sessionCookie = oldCookie
-        assertEquals(401, c.get("/api/me").status)
+        assertEquals(204, c.get("/api/me").status)
     }
 
     @Test
     fun `protected endpoints require a session`() {
-        assertEquals("UNAUTHENTICATED", client().get("/api/me").code)
+        assertEquals(204, client().get("/api/me").status) // "nobody", not an error
+        assertEquals("UNAUTHENTICATED", client().get("/api/reservations").code)
         assertEquals(401, client().get("/api/reservations").status)
     }
 }

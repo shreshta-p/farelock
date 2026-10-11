@@ -12,7 +12,6 @@ import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -55,9 +54,12 @@ class AuthController(
             .build()
     }
 
-    /** The interceptor has already checked the session and stored the user on the request. */
+    /** Who is signed in? 200 with the user, or 204 when there is no valid session (not an error). */
     @GetMapping("/me")
-    fun me(@RequestAttribute(CURRENT_USER) user: User): User = user
+    fun me(request: HttpServletRequest): ResponseEntity<User> =
+        sessionToken(request)?.let { auth.userForSession(it) }
+            ?.let { ResponseEntity.ok(it) }
+            ?: ResponseEntity.noContent().build()
 
     private fun withSessionCookie(status: HttpStatus, result: LoginResult) =
         ResponseEntity.status(status)
