@@ -1,6 +1,8 @@
 package com.farelock.reservation.common
 
 import org.slf4j.LoggerFactory
+import org.springframework.jdbc.CannotGetJdbcConnectionException
+import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -46,6 +48,13 @@ class ErrorHandler {
 
     @ExceptionHandler(NoResourceFoundException::class)
     fun noRoute(e: Exception) = error(HttpStatus.NOT_FOUND, "NOT_FOUND", "Not found")
+
+    // The database is unreachable (Hikari gave up after its 2s timeout): temporary, so 503 tells clients to retry.
+    @ExceptionHandler(CannotGetJdbcConnectionException::class, CannotCreateTransactionException::class)
+    fun databaseDown(e: Exception): ResponseEntity<ApiError> {
+        log.error("Database unavailable: {}", e.message)
+        return error(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", "Temporarily unavailable, please retry")
+    }
 
     @ExceptionHandler(Exception::class)
     fun unexpected(e: Exception): ResponseEntity<ApiError> {

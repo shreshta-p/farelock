@@ -1,6 +1,8 @@
 package com.farelock.pricing
 
 import org.slf4j.LoggerFactory
+import org.springframework.jdbc.CannotGetJdbcConnectionException
+import org.springframework.transaction.CannotCreateTransactionException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -35,6 +37,13 @@ class ErrorHandler {
         HttpStatus.BAD_REQUEST, "VALIDATION_FAILED",
         e.bindingResult.fieldErrors.joinToString("; ") { "${it.field} ${it.defaultMessage}" },
     )
+
+    // The database is unreachable (Hikari gave up after its 2s timeout): temporary, so 503 tells clients to retry.
+    @ExceptionHandler(CannotGetJdbcConnectionException::class, CannotCreateTransactionException::class)
+    fun databaseDown(e: Exception): ResponseEntity<ApiError> {
+        log.error("Database unavailable: {}", e.message)
+        return error(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", "Temporarily unavailable, please retry")
+    }
 
     @ExceptionHandler(Exception::class)
     fun unexpected(e: Exception): ResponseEntity<ApiError> {
