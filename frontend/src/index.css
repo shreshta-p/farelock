@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/newsreader';
+@import '@fontsource-variable/newsreader/wght-italic.css';
+@import '@fontsource-variable/hanken-grotesk';
+
+/* Design tokens: one warm paper ground, charcoal ink, a single muted clay accent. */
+@theme {
+  --font-serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: #f6f1e9;      /* page background, warm ivory */
+  --color-paper-deep: #ede6da; /* bands, skeletons */
+  --color-card: #fbf8f3;       /* raised surfaces */
+  --color-ink: #1f1c19;        /* primary text, buttons */
+  --color-ink-soft: #4a453e;   /* body copy */
+  --color-muted: #7a7266;      /* captions, meta */
+  --color-line: #ddd4c6;       /* hairlines */
+  --color-clay: #9c5a3c;       /* accent: links, highlights */
+  --color-clay-soft: #f1e2d8;
+  --color-moss: #4f5b3e;       /* success */
+  --color-moss-soft: #e6e9dc;
+  --color-rust: #a23a26;       /* errors */
+  --color-rust-soft: #f5dfd8;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  /* Keep anchored sections clear of the sticky header. */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+  ::selection {
+    background: var(--color-clay-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-clay);
+    outline-offset: 3px;
+  }
+  /* Native date input in the paper palette. */
+  input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0.55;
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Small spaced capitals used for labels and section kickers. */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+  }
+  .link {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.2s;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+  /* Slow, gentle zoom on photo hover; disabled for reduced motion below. */
+  .photo-zoom img {
+    transition: transform 1.2s var(--ease-out-soft);
+  }
+  .group:hover .photo-zoom img {
+    transform: scale(1.035);
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--color-paper-deep) 0%, #e6dece 50%, var(--color-paper-deep) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .group:hover .photo-zoom img { transform: none; }
+}

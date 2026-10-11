@@ -24,3 +24,4 @@ Thumbs.db
 
 # Load test output
 load-tests/results/
+*.tsbuildinfo

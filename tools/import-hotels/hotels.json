@@ -30,7 +30,7 @@
       "name": "Hôtel Lutetia", "address": "45 Boulevard Raspail, 75006 Paris", "stars": 5,
       "description": "The only grand palace hotel on the Left Bank, opened in 1910 on Boulevard Raspail facing the Square Boucicaut. Its Art Nouveau façade gives way to quiet rooms in Saint-Germain-des-Prés.",
       "amenities": ["Saint-Germain-des-Prés", "Spa and pool", "Jazz bar", "Restaurant", "Concierge"],
-      "gallery": ["lobby:MOMg_740mgQ", "bath:q-LqibnwN8Y", "city:t9Td0zfDTwI"],
+      "gallery": ["lobby:1CcryZiF2PA", "bath:q-LqibnwN8Y", "city:t9Td0zfDTwI"],
       "rooms": [
         ["Superior Room", "Soft greys and walnut, a king bed and Left Bank rooftops outside.", "King", 30, 2, 690, 30, "room:EYoK3eVKIiQ"],
         ["Deluxe Room", "More space, a sofa by the window and a deep bathtub.", "King", 38, 2, 890, 20, "room:NYpT6hsGQoc"],
@@ -54,7 +54,7 @@
       "name": "Pestana Palace Lisboa", "address": "Rua Jau 54, 1300-314 Lisboa", "stars": 5,
       "description": "A restored early-twentieth-century palace set in its own gardens in Alto de Santo Amaro, above the Tagus. Rooms sit in the palace and its newer wings around a garden pool.",
       "amenities": ["Palace gardens", "Outdoor pool", "Spa", "Free parking", "Restaurant"],
-      "gallery": ["lobby:MOMg_740mgQ", "bath:hYexJa2IrVo", "city:VHWyqXsWHg0"],
+      "gallery": ["lobby:QJMKyrud5l8", "bath:hYexJa2IrVo", "city:VHWyqXsWHg0"],
       "rooms": [
         ["Superior Garden View", "Overlooking the gardens, with a king bed and balcony.", "King", 32, 2, 260, 40, "room:67-sOi7mVIk"],
         ["Deluxe Room", "More room to unwind and a marble bathroom with bathtub.", "King", 40, 3, 340, 25, "room:EYoK3eVKIiQ"],
@@ -102,7 +102,7 @@
       "name": "Hilton Cape Town City Centre", "address": "126 Buitengracht Street, Cape Town City Centre, 8001", "stars": 4,
       "description": "On Buitengracht Street in the City Bowl, opened in 2011, with Table Mountain behind and the colourful houses of Bo-Kaap next door. The V&A Waterfront is ten minutes away.",
       "amenities": ["Table Mountain views", "Outdoor pool", "Fitness centre", "Restaurant", "Parking"],
-      "gallery": ["lobby:MOMg_740mgQ", "bath:q-LqibnwN8Y", "city:bVovHygDlJI"],
+      "gallery": ["lobby:QJMKyrud5l8", "bath:q-LqibnwN8Y", "city:bVovHygDlJI"],
       "rooms": [
         ["King Room", "A king bed and city or mountain views.", "King", 30, 2, 2600, 40, "room:w72a24brINI"],
         ["Executive King", "Higher floors and access to the executive lounge.", "King", 34, 2, 3400, 25, "room:67-sOi7mVIk"],

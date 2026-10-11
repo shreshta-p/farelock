@@ -39,7 +39,6 @@ representative only and do not show the specific hotel's rooms. Images were resi
 | `photos/EYoK3eVKIiQ` | Natalia Gusakova | [Unsplash](https://unsplash.com/photos/EYoK3eVKIiQ) | Unsplash License |
 | `photos/GmW4hfTX0ns` | Juliana Morales Ramírez | [Unsplash](https://unsplash.com/photos/GmW4hfTX0ns) | Unsplash License |
 | `photos/hYexJa2IrVo` | Masato Tsuchiya | [Unsplash](https://unsplash.com/photos/hYexJa2IrVo) | Unsplash License |
-| `photos/MOMg_740mgQ` | The Anam | [Unsplash](https://unsplash.com/photos/MOMg_740mgQ) | Unsplash License |
 | `photos/NxMuc8XaLZU` | Antonio Araujo | [Unsplash](https://unsplash.com/photos/NxMuc8XaLZU) | Unsplash License |
 | `photos/NYpT6hsGQoc` | Frugal Flyer | [Unsplash](https://unsplash.com/photos/NYpT6hsGQoc) | Unsplash License |
 | `photos/oGRrpBX2ER4` | Carlos Aguilar | [Unsplash](https://unsplash.com/photos/oGRrpBX2ER4) | Unsplash License |
