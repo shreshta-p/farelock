@@ -90,9 +90,6 @@ class ReservationService(
     private fun holdRoom(user: User, key: String, request: CreateReservationRequest, quote: Quote): StoredResponse =
         tx.execute {
             val room = catalog.findRoomType(request.roomTypeId) ?: throw notFound("Room type")
-            if (!inventory.tryHold(room.id, request.stayDate)) {
-                throw ApiException(HttpStatus.CONFLICT, "SOLD_OUT", "No rooms of this type are left for that night")
-            }
             val id = UUID.randomUUID()
             reservations.insert(
                 NewReservation(
@@ -110,6 +107,14 @@ class ReservationService(
             )
             val response = StoredResponse(HttpStatus.CREATED.value(), json.writeValueAsString(reservations.find(id)))
             idempotency.complete(user.id, key, response) // same transaction: both commit or neither does
+
+            // Take the room LAST. Every booking for this room and night updates the same inventory row,
+            // and the row stays locked until commit, so the lock is held for one statement only.
+            // (Measured: taking it first made bookings queue behind each other's later statements;
+            // see docs/benchmark.md.) If sold out, the exception rolls back the insert above.
+            if (!inventory.tryHold(room.id, request.stayDate)) {
+                throw ApiException(HttpStatus.CONFLICT, "SOLD_OUT", "No rooms of this type are left for that night")
+            }
             response
         }!!
 

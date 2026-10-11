@@ -14,6 +14,7 @@ spring:
     hikari:
       schema: pricing
       connection-timeout: 2000 # fail fast (ms) if the database is unreachable
+      maximum-pool-size: ${DB_POOL_SIZE:10}
   flyway:
     schemas: pricing
     default-schema: pricing
