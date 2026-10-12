@@ -25,11 +25,11 @@ class PricingRepository(private val jdbc: JdbcClient) {
     fun insertQuote(q: Quote) {
         jdbc.sql(
             """
-            INSERT INTO quotes (id, room_type_id, hotel_id, stay_date, amount, currency, created_at, expires_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO quotes (id, room_type_id, hotel_id, stay_date, amount, protection_fee, currency, created_at, expires_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
         )
-            .params(q.id, q.roomTypeId, q.hotelId, q.stayDate, q.amount, q.currency,
+            .params(q.id, q.roomTypeId, q.hotelId, q.stayDate, q.amount, q.protectionFee, q.currency,
                 Timestamp.from(q.createdAt), Timestamp.from(q.expiresAt))
             .update()
     }
@@ -44,6 +44,7 @@ class PricingRepository(private val jdbc: JdbcClient) {
                     hotelId = rs.getLong("hotel_id"),
                     stayDate = rs.getDate("stay_date").toLocalDate(),
                     amount = rs.getBigDecimal("amount"),
+                    protectionFee = rs.getBigDecimal("protection_fee"),
                     currency = rs.getString("currency"),
                     createdAt = rs.getTimestamp("created_at").toInstant(),
                     expiresAt = rs.getTimestamp("expires_at").toInstant(),

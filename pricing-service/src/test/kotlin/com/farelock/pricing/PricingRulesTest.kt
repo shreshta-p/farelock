@@ -37,4 +37,10 @@ class PricingRulesTest {
         // Friday: 30,999 * 1.15 = 35,648.85 -> 35,649 (no decimals for yen)
         assertEquals(BigDecimal("35649"), PricingRules.nightlyPrice(BigDecimal("30999"), "JPY", LocalDate.of(2026, 3, 20), today))
     }
+
+    @Test
+    fun `cancellation protection costs 10 percent, rounded like any price`() {
+        assertEquals(BigDecimal("25.30"), PricingRules.protectionFee(BigDecimal("252.99"), "EUR")) // 25.299
+        assertEquals(BigDecimal("3565"), PricingRules.protectionFee(BigDecimal("35649"), "JPY"))  // 3564.9
+    }
 }

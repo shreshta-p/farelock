@@ -16,6 +16,7 @@ object PricingRules {
     private val WEEKEND_MULTIPLIER = BigDecimal("1.15")
     private val LAST_MINUTE_MULTIPLIER = BigDecimal("1.10")
     private const val LAST_MINUTE_DAYS = 7
+    private val PROTECTION_RATE = BigDecimal("0.10")
 
     fun nightlyPrice(basePrice: BigDecimal, currency: String, stayDate: LocalDate, today: LocalDate): BigDecimal {
         var price = basePrice
@@ -25,8 +26,15 @@ object PricingRules {
         if (ChronoUnit.DAYS.between(today, stayDate) < LAST_MINUTE_DAYS) {
             price = price.multiply(LAST_MINUTE_MULTIPLIER)
         }
-        // Round to the currency's minor unit (2 for EUR/USD, 0 for JPY).
-        // Banker's rounding avoids a systematic upward bias across many prices.
-        return price.setScale(Currency.getInstance(currency).defaultFractionDigits, RoundingMode.HALF_EVEN)
+        return roundToCurrency(price, currency)
     }
+
+    /** Optional free-cancellation protection: 10% of the room price, not refundable itself. */
+    fun protectionFee(roomPrice: BigDecimal, currency: String): BigDecimal =
+        roundToCurrency(roomPrice.multiply(PROTECTION_RATE), currency)
+
+    // Round to the currency's minor unit (2 for EUR/USD, 0 for JPY).
+    // Banker's rounding avoids a systematic upward bias across many prices.
+    private fun roundToCurrency(amount: BigDecimal, currency: String): BigDecimal =
+        amount.setScale(Currency.getInstance(currency).defaultFractionDigits, RoundingMode.HALF_EVEN)
 }

@@ -68,6 +68,8 @@ class PricingApiTest {
 
         val fetched = get("/api/quotes/$id")
         assertEquals(0, created.body["amount"].decimalValue().compareTo(fetched.body["amount"].decimalValue()))
+        assertEquals(0, created.body["protectionFee"].decimalValue().compareTo(fetched.body["protectionFee"].decimalValue()))
+        assertTrue(fetched.body["protectionFee"].decimalValue().signum() > 0)
         assertTrue(fetched.body["expired"].asBoolean())
     }
 

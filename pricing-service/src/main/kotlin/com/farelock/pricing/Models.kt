@@ -30,6 +30,7 @@ data class Quote(
     val hotelId: Long,
     val stayDate: LocalDate,
     val amount: BigDecimal,
+    val protectionFee: BigDecimal,
     val currency: String,
     val createdAt: Instant,
     val expiresAt: Instant,
@@ -41,6 +42,7 @@ data class QuoteResponse(
     val hotelId: Long,
     val stayDate: LocalDate,
     val amount: BigDecimal,
+    val protectionFee: BigDecimal, // price of optional free cancellation, locked with the room price
     val currency: String,
     val expiresAt: Instant,
     val expired: Boolean,
