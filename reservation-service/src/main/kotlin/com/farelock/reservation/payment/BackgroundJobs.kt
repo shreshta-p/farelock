@@ -29,6 +29,7 @@ class BackgroundJobs(
     private val inventory: InventoryRepository,
     private val provider: PaymentProvider,
     private val payments: PaymentService,
+    private val cancellations: CancellationService,
     private val tx: TransactionTemplate,
     private val clock: Clock,
     private val meters: MeterRegistry,
@@ -80,6 +81,26 @@ class BackgroundJobs(
         }
         return results.groupingBy { it }.eachCount()
     }
+
+    /**
+     * Retries refunds that were recorded but not confirmed by the provider (timeout, provider
+     * error, crash between the two steps). The refund key makes each retry safe.
+     */
+    fun retryRefunds(): Map<String, Int> {
+        val pending = reservations.findPendingRefunds(clock.instant().minus(reconcileAfter), 100)
+        val results = pending.map { r ->
+            val result = try {
+                cancellations.refund(r)
+                "refunded"
+            } catch (e: Exception) {
+                log.warn("Refund retry failed for reservation {}: {}", r.id, e.message)
+                "refund_failed"
+            }
+            meters.counter("farelock.reconciliation", "result", result).increment()
+            result
+        }
+        return results.groupingBy { it }.eachCount()
+    }
 }
 
 /** Runs the jobs on a timer. Disabled in tests, which call the jobs directly. */
@@ -96,6 +117,7 @@ class JobSchedule(private val jobs: BackgroundJobs) {
     fun run() {
         jobs.expireHolds()
         jobs.reconcilePayments()
+        jobs.retryRefunds()
     }
 }
 
@@ -107,5 +129,6 @@ class JobController(private val jobs: BackgroundJobs) {
         "inventoryRowsAdded" to jobs.extendInventory(),
         "holdsExpired" to jobs.expireHolds(),
         "reconciliation" to jobs.reconcilePayments(),
+        "refunds" to jobs.retryRefunds(),
     )
 }

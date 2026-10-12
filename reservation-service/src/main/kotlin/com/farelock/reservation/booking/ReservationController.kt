@@ -4,6 +4,7 @@ import com.farelock.reservation.auth.CURRENT_USER
 import com.farelock.reservation.auth.User
 import com.farelock.reservation.common.ApiException
 import com.farelock.reservation.common.withRequestContext
+import com.farelock.reservation.payment.CancellationService
 import com.farelock.reservation.payment.PaymentService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
@@ -29,6 +30,7 @@ data class CreateReservationBody(
     @field:NotNull @field:Positive val roomTypeId: Long?,
     @field:NotNull val stayDate: LocalDate?,
     @field:NotBlank @field:Size(max = 100) val guestName: String?,
+    val cancellationProtection: Boolean? = null, // optional; missing means no protection
 )
 
 data class PaymentBody(@field:NotBlank val paymentToken: String?)
@@ -38,6 +40,7 @@ data class PaymentBody(@field:NotBlank val paymentToken: String?)
 class ReservationController(
     private val reservations: ReservationService,
     private val payments: PaymentService,
+    private val cancellations: CancellationService,
 ) {
 
     @PostMapping
@@ -49,7 +52,9 @@ class ReservationController(
         if (idempotencyKey.isBlank() || idempotencyKey.length > 100) {
             throw ApiException(HttpStatus.BAD_REQUEST, "INVALID_IDEMPOTENCY_KEY", "Idempotency-Key must be 1-100 characters")
         }
-        val request = CreateReservationRequest(body.quoteId!!, body.roomTypeId!!, body.stayDate!!, body.guestName!!)
+        val request = CreateReservationRequest(
+            body.quoteId!!, body.roomTypeId!!, body.stayDate!!, body.guestName!!, body.cancellationProtection ?: false,
+        )
         // The body is already-serialized JSON: either fresh, or the stored answer to an earlier identical request.
         val response = withRequestContext { reservations.create(user, idempotencyKey, request) }
         return ResponseEntity.status(response.status).contentType(MediaType.APPLICATION_JSON).body(response.body)
@@ -64,6 +69,11 @@ class ReservationController(
         val result = withRequestContext { payments.pay(user, id, body.paymentToken!!) }
         return ResponseEntity.status(result.httpStatus).body(result.reservation)
     }
+
+    /** Cancels a stay. Repeating it is safe: the reservation's state decides, and refunds are keyed. */
+    @PostMapping("/{id}/cancel")
+    suspend fun cancel(@RequestAttribute(CURRENT_USER) user: User, @PathVariable id: UUID): Reservation =
+        withRequestContext { cancellations.cancel(user, id) }
 
     @GetMapping
     fun list(@RequestAttribute(CURRENT_USER) user: User) = reservations.listFor(user)

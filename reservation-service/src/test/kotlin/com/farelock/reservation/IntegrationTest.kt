@@ -60,8 +60,8 @@ abstract class IntegrationTest {
             .params(TestHotel.ROOM_TYPE_ID, stayDate, rooms).update()
     }
 
-    fun reservationBody(quoteId: UUID, guest: String = "Ada Lovelace") =
-        """{"quoteId":"$quoteId","roomTypeId":${TestHotel.ROOM_TYPE_ID},"stayDate":"$stayDate","guestName":"$guest"}"""
+    fun reservationBody(quoteId: UUID, guest: String = "Ada Lovelace", protection: Boolean = false) =
+        """{"quoteId":"$quoteId","roomTypeId":${TestHotel.ROOM_TYPE_ID},"stayDate":"$stayDate","guestName":"$guest","cancellationProtection":$protection}"""
 
     fun inventory(): Pair<Int, Int> =
         jdbc.sql("SELECT held, booked FROM room_inventory WHERE room_type_id = ? AND stay_date = ?")

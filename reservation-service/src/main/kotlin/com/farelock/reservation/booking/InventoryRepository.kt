@@ -38,6 +38,14 @@ class InventoryRepository(private val jdbc: JdbcClient) {
         ) { "No hold to convert for room type $roomTypeId on $stayDate" }
     }
 
+    /** A confirmed stay was cancelled: the booked room goes back on sale. */
+    fun releaseBooking(roomTypeId: Long, stayDate: LocalDate) {
+        check(
+            jdbc.sql("UPDATE room_inventory SET booked = booked - 1 WHERE room_type_id = ? AND stay_date = ? AND booked > 0")
+                .params(roomTypeId, stayDate).update() == 1
+        ) { "No booking to release for room type $roomTypeId on $stayDate" }
+    }
+
     /**
      * Makes sure every room type has an inventory row for each night from today through
      * [days] days ahead. Existing rows (with their holds and bookings) are left untouched.

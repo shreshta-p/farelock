@@ -59,7 +59,7 @@ object FakePricing {
         val expiresAt = Instant.now().plus(validFor)
         quotes[id] = """
             {"id":"$id","roomTypeId":$roomTypeId,"hotelId":${TestHotel.ID},"stayDate":"$stayDate",
-             "amount":$amount,"currency":"$currency","expiresAt":"$expiresAt","expired":${validFor.isNegative}}
+             "amount":$amount,"protectionFee":15.00,"currency":"$currency","expiresAt":"$expiresAt","expired":${validFor.isNegative}}
         """.trimIndent()
         return id
     }

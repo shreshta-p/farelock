@@ -18,6 +18,7 @@ import java.security.MessageDigest
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.UUID
 
 data class CreateReservationRequest(
@@ -25,6 +26,7 @@ data class CreateReservationRequest(
     val roomTypeId: Long,
     val stayDate: LocalDate,
     val guestName: String,
+    val cancellationProtection: Boolean,
 )
 
 @Service
@@ -90,6 +92,13 @@ class ReservationService(
     private fun holdRoom(user: User, key: String, request: CreateReservationRequest, quote: Quote): StoredResponse =
         tx.execute {
             val room = catalog.findRoomType(request.roomTypeId) ?: throw notFound("Room type")
+            val hotel = catalog.findHotel(room.hotelId)!!
+            val cancelDeadline = request.stayDate.atStartOfDay(ZoneId.of(hotel.timezone)).toInstant()
+            if (request.cancellationProtection && !clock.instant().isBefore(cancelDeadline)) {
+                // Check-in day has already started at the hotel: protection could never be used.
+                throw ApiException(HttpStatus.UNPROCESSABLE_CONTENT, "PROTECTION_UNAVAILABLE",
+                    "Free cancellation can't be added once check-in day has started at the hotel")
+            }
             val id = UUID.randomUUID()
             reservations.insert(
                 NewReservation(
@@ -101,8 +110,12 @@ class ReservationService(
                     guestName = request.guestName.trim(),
                     quoteId = quote.id,
                     amount = quote.amount,
+                    protectionFee = if (request.cancellationProtection) quote.protectionFee else null,
                     currency = quote.currency,
                     holdExpiresAt = clock.instant().plus(holdDuration),
+                    // The policy is frozen at booking time, like the price: cancellation closes when
+                    // the stay date begins in the hotel's own time zone (midnight in Tokyo for a Kyoto hotel).
+                    cancelDeadline = cancelDeadline,
                 )
             )
             val response = StoredResponse(HttpStatus.CREATED.value(), json.writeValueAsString(reservations.find(id)))

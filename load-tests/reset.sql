@@ -15,6 +15,7 @@ CREATE TEMP TABLE lt_users AS SELECT id FROM reservation.users WHERE email LIKE 
 CREATE TEMP TABLE lt_reservations AS
   SELECT id FROM reservation.reservations WHERE hotel_id = 99 OR user_id IN (SELECT id FROM lt_users);
 
+DELETE FROM payment_provider.refunds WHERE charge_key IN (SELECT id::text FROM lt_reservations);
 DELETE FROM payment_provider.charges WHERE idempotency_key IN (SELECT id::text FROM lt_reservations);
 DELETE FROM reservation.reservations WHERE id IN (SELECT id FROM lt_reservations);
 DELETE FROM reservation.idempotency_keys WHERE user_id IN (SELECT id FROM lt_users);

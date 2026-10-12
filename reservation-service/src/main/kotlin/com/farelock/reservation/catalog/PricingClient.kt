@@ -30,6 +30,7 @@ data class Quote(
     val hotelId: Long,
     val stayDate: LocalDate,
     val amount: BigDecimal,
+    val protectionFee: BigDecimal,
     val currency: String,
     val expiresAt: Instant,
     val expired: Boolean,

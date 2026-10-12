@@ -19,6 +19,7 @@ data class Hotel(
     val amenities: List<String>,
     val images: List<String>,
     val sourceUrl: String?,
+    val timezone: String, // IANA zone, e.g. "Asia/Tokyo"
 )
 
 data class RoomType(
@@ -102,6 +103,7 @@ class CatalogRepository(private val jdbc: JdbcClient) {
         amenities = (getArray("amenities").array as Array<String>).toList(),
         images = (getArray("images").array as Array<String>).toList(),
         sourceUrl = getString("source_url"),
+        timezone = getString("timezone"),
     )
 
     private fun ResultSet.toRoomType() = RoomType(

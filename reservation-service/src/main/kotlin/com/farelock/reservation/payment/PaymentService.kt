@@ -100,7 +100,7 @@ class PaymentService(
     private suspend fun callProvider(r: Reservation, token: String): ChargeOutcome? {
         val outcome = try {
             withTimeout(paymentTimeout.toMillis()) {
-                runInterruptible(Dispatchers.IO) { provider.charge(r.id.toString(), r.amount, r.currency, token) }
+                runInterruptible(Dispatchers.IO) { provider.charge(r.id.toString(), r.total, r.currency, token) }
             }
         } catch (e: TimeoutCancellationException) {
             log.warn("Payment provider timed out for reservation {}", r.id)
@@ -122,6 +122,8 @@ class PaymentService(
             } else {
                 throw ApiException(HttpStatus.CONFLICT, "RESERVATION_RELEASED", "This reservation is no longer active")
             }
+        ReservationStatus.CANCELLED ->
+            throw ApiException(HttpStatus.CONFLICT, "RESERVATION_CANCELLED", "This reservation was cancelled")
         ReservationStatus.HELD -> throw IllegalStateException("unreachable: payment not started")
     }
 }

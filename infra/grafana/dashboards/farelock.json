@@ -710,7 +710,7 @@
       "id": 16,
       "type": "timeseries",
       "title": "Reconciliation results",
-      "description": "Per minute. confirmed / released / still_pending.",
+      "description": "Per minute. confirmed / released / still_pending / refunded (retried refund).",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -761,6 +761,112 @@
     },
     {
       "id": 17,
+      "type": "timeseries",
+      "title": "Cancellations by refund",
+      "description": "Per minute. full = protected stay, room price refunded; none = non-refundable or unpaid hold.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 42
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "sum by (refund) (rate(farelock_cancellations_total[1m]) * 60)",
+          "legendFormat": "{{refund}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            }
+          },
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "Refunds",
+      "description": "Per minute. deferred = provider didn't confirm in time; the reconciler retries with the same key.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 42
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A",
+          "expr": "sum by (outcome) (rate(farelock_refunds_total[1m]) * 60)",
+          "legendFormat": "{{outcome}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            }
+          },
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 19,
       "type": "row",
       "title": "Pricing cache",
       "collapsed": false,
@@ -768,12 +874,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 50
       },
       "panels": []
     },
     {
-      "id": 18,
+      "id": 20,
       "type": "stat",
       "title": "Cache hit ratio",
       "description": "",
@@ -785,7 +891,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 43
+        "y": 51
       },
       "targets": [
         {
@@ -818,7 +924,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 21,
       "type": "timeseries",
       "title": "Cache lookups by result",
       "description": "error = Redis unavailable; requests fell back to Postgres.",
@@ -830,7 +936,7 @@
         "h": 8,
         "w": 18,
         "x": 6,
-        "y": 43
+        "y": 51
       },
       "targets": [
         {
@@ -870,7 +976,7 @@
       }
     },
     {
-      "id": 20,
+      "id": 22,
       "type": "row",
       "title": "Resources",
       "collapsed": false,
@@ -878,12 +984,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 51
+        "y": 59
       },
       "panels": []
     },
     {
-      "id": 21,
+      "id": 23,
       "type": "timeseries",
       "title": "JVM heap used",
       "description": "",
@@ -895,7 +1001,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 52
+        "y": 60
       },
       "targets": [
         {
@@ -935,7 +1041,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 24,
       "type": "timeseries",
       "title": "Process CPU",
       "description": "",
@@ -947,7 +1053,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 52
+        "y": 60
       },
       "targets": [
         {
@@ -987,7 +1093,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 25,
       "type": "timeseries",
       "title": "DB connection pool",
       "description": "Waiting > 0 means requests are queueing for a database connection.",
@@ -999,7 +1105,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 52
+        "y": 60
       },
       "targets": [
         {
@@ -1057,7 +1163,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 26,
       "type": "timeseries",
       "title": "DB connection wait time (avg)",
       "description": "",
@@ -1069,7 +1175,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 60
+        "y": 68
       },
       "targets": [
         {
@@ -1109,7 +1215,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 27,
       "type": "timeseries",
       "title": "JVM live threads",
       "description": "",
@@ -1121,7 +1227,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 60
+        "y": 68
       },
       "targets": [
         {
