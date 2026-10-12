@@ -10,6 +10,7 @@ const STATUS: Record<Reservation['status'], { label: string; className: string }
   PAYMENT_PENDING: { label: 'Verifying payment', className: 'bg-clay-soft text-clay' },
   HELD: { label: 'Awaiting payment', className: 'bg-clay-soft text-clay' },
   RELEASED: { label: 'Released', className: 'bg-paper-deep text-muted' },
+  CANCELLED: { label: 'Cancelled', className: 'bg-paper-deep text-muted' },
 }
 
 function Row({ r }: { r: Reservation }) {
@@ -27,7 +28,7 @@ function Row({ r }: { r: Reservation }) {
         </span>
         <span className={`w-fit px-2.5 py-1 text-xs font-semibold ${status.className}`}>{status.label}</span>
         <span className="flex items-center gap-4 sm:justify-end">
-          <span className="tabular-nums">{formatMoney(r.amount, r.currency)}</span>
+          <span className="tabular-nums">{formatMoney(r.total, r.currency)}</span>
           <ArrowRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-1" aria-hidden />
         </span>
       </Link>
@@ -38,7 +39,7 @@ function Row({ r }: { r: Reservation }) {
 export function Reservations() {
   const list = useLoad(() => api.reservations(), [])
   const all = list.data ?? []
-  const upcoming = all.filter((r) => r.stayDate >= today() && r.status !== 'RELEASED')
+  const upcoming = all.filter((r) => r.stayDate >= today() && r.status !== 'RELEASED' && r.status !== 'CANCELLED')
   const past = all.filter((r) => !upcoming.includes(r))
 
   return (
@@ -62,7 +63,7 @@ export function Reservations() {
           </section>
           {past.length > 0 && (
             <section aria-labelledby="past" className="mt-14">
-              <h2 id="past" className="eyebrow border-b border-ink pb-3">Past and released</h2>
+              <h2 id="past" className="eyebrow border-b border-ink pb-3">Past, cancelled and released</h2>
               <ul>{past.map((r) => <Row key={r.id} r={r} />)}</ul>
             </section>
           )}

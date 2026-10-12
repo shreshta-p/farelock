@@ -16,9 +16,12 @@ const PAYMENT_OPTIONS: { token: PaymentToken; label: string; detail: string }[] 
   { token: 'tok_unknown', label: 'Pending at the bank', detail: 'The outcome is unknown for about 20 seconds, then approved.' },
 ]
 
-/** One idempotency key per quote, kept across refreshes, so resubmitting can never book twice. */
-function idempotencyKeyFor(quoteId: string) {
-  const storageKey = `farelock:checkout:${quoteId}`
+/**
+ * One idempotency key per quote and cancellation choice, kept across refreshes, so resubmitting can
+ * never book twice. (The choice is part of the request, and one key must always mean one request.)
+ */
+function idempotencyKeyFor(quoteId: string, protection: boolean) {
+  const storageKey = `farelock:checkout:${quoteId}:${protection ? 'protected' : 'standard'}`
   let key = sessionStorage.getItem(storageKey)
   if (!key) {
     key = crypto.randomUUID()
@@ -50,6 +53,7 @@ export function Checkout() {
 
   const [guestName, setGuestName] = useState(user?.fullName ?? '')
   const [token, setToken] = useState<PaymentToken>('tok_approve')
+  const [protection, setProtection] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [reservation, setReservation] = useState<Reservation | null>(null)
@@ -69,6 +73,7 @@ export function Checkout() {
   const data = load.data
   const room = data?.hotel.rooms.find((r) => r.room.id === data.quote.roomTypeId)?.room
   const expired = secondsLeft === 0 && !reservation
+  const total = data ? data.quote.amount + (protection ? data.quote.protectionFee : 0) : 0
 
   const refreshQuote = async () => {
     if (!data) return
@@ -96,8 +101,14 @@ export function Checkout() {
     try {
       // Step 1: hold the room. Safe to repeat thanks to the idempotency key.
       held ??= await api.createReservation(
-        { quoteId, roomTypeId: data.quote.roomTypeId, stayDate: data.quote.stayDate, guestName: guestName.trim() },
-        idempotencyKeyFor(quoteId),
+        {
+          quoteId,
+          roomTypeId: data.quote.roomTypeId,
+          stayDate: data.quote.stayDate,
+          guestName: guestName.trim(),
+          cancellationProtection: protection,
+        },
+        idempotencyKeyFor(quoteId, protection),
       )
       setReservation(held)
       // Step 2: pay. 200 = confirmed, 202 = still verifying; the confirmation page shows both.
@@ -136,9 +147,52 @@ export function Checkout() {
             />
           </fieldset>
 
+          <fieldset disabled={!!reservation}>
+            <legend className="display mb-2 text-2xl">
+              <span className="mr-3 text-sm font-semibold text-clay">02</span>Cancellation
+            </legend>
+            <p className="mb-6 text-sm text-ink-soft">
+              You can cancel until check-in day begins at the hotel
+              {data && <> ({formatDate(data.quote.stayDate)}, 00:00 {data.hotel.hotel.city} time)</>}.
+            </p>
+            <div className="divide-y divide-line border-y border-line">
+              {[
+                {
+                  value: true,
+                  label: 'Free cancellation',
+                  price: data ? `+ ${formatMoney(data.quote.protectionFee, data.quote.currency)}` : '',
+                  detail: 'Cancel in time and get the room price back. The fee itself is not refunded.',
+                },
+                {
+                  value: false,
+                  label: 'Non-refundable',
+                  price: 'No extra cost',
+                  detail: 'You can still cancel and free the room, but the room price is not refunded.',
+                },
+              ].map((o) => (
+                <label key={String(o.value)} className="flex cursor-pointer items-start gap-4 py-4 transition-colors hover:bg-card/70">
+                  <input
+                    type="radio"
+                    name="protection"
+                    checked={protection === o.value}
+                    onChange={() => setProtection(o.value)}
+                    className="mt-1.5 h-4 w-4 accent-[var(--color-ink)]"
+                  />
+                  <span className="flex-1">
+                    <span className="flex flex-wrap justify-between gap-x-4">
+                      <span className="font-medium">{o.label}</span>
+                      <span className="text-sm tabular-nums text-ink-soft">{o.price}</span>
+                    </span>
+                    <span className="block text-sm text-muted">{o.detail}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
           <fieldset>
             <legend className="display mb-2 text-2xl">
-              <span className="mr-3 text-sm font-semibold text-clay">02</span>Payment
+              <span className="mr-3 text-sm font-semibold text-clay">03</span>Payment
             </legend>
             <p className="mb-6 text-sm text-ink-soft">
               Payments are simulated. Choose how the test provider should respond. No card details are needed or collected.
@@ -168,7 +222,7 @@ export function Checkout() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <Button type="submit" busy={submitting} disabled={!data || expired} className="sm:w-64">
               <Lock className="h-4 w-4" aria-hidden />
-              {data ? `Pay ${formatMoney(data.quote.amount, data.quote.currency)}` : 'Pay'}
+              {data ? `Pay ${formatMoney(total, data.quote.currency)}` : 'Pay'}
             </Button>
             <p className="text-xs text-muted">Your room is held for 10 minutes once you press pay.</p>
           </div>
@@ -191,10 +245,14 @@ export function Checkout() {
                     <div className="flex justify-between gap-4"><dt className="text-muted">Room</dt><dd className="text-right">{room?.name}</dd></div>
                     <div className="flex justify-between gap-4"><dt className="text-muted">Night</dt><dd className="text-right">{formatDate(data.quote.stayDate)}</dd></div>
                     <div className="flex justify-between gap-4"><dt className="text-muted">Guests</dt><dd>Up to {room?.maxGuests}</dd></div>
+                    <div className="flex justify-between gap-4"><dt className="text-muted">Room rate</dt><dd className="tabular-nums">{formatMoney(data.quote.amount, data.quote.currency)}</dd></div>
+                    {protection && (
+                      <div className="flex justify-between gap-4"><dt className="text-muted">Free cancellation</dt><dd className="tabular-nums">{formatMoney(data.quote.protectionFee, data.quote.currency)}</dd></div>
+                    )}
                   </dl>
                   <div className="mt-5 flex items-baseline justify-between border-t border-ink pt-5">
                     <span className="font-medium">Total</span>
-                    <span className="display text-3xl">{formatMoney(data.quote.amount, data.quote.currency)}</span>
+                    <span className="display text-3xl">{formatMoney(total, data.quote.currency)}</span>
                   </div>
                   <div className="mt-5" aria-live="polite">
                     {expired ? (

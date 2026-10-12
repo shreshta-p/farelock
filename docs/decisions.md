@@ -97,3 +97,22 @@ and is forwarded to Pricing. Logs are JSON (ECS). Because MDC is thread-local an
 suspend handlers wrap their body in `withContext(MDCContext())`, which restores the MDC on every resume.
 Prometheus and Grafana run under the optional `monitoring` Compose profile, with the dashboard provisioned
 from `infra/grafana/dashboards/farelock.json`.
+
+### 13. Cancellation: protection priced by Pricing, policy frozen at booking, refunds recorded before they're sent
+Guests choose at checkout between **free cancellation** (a fee of 10% of the room price, quoted by Pricing
+alongside the room price) and **non-refundable**. Either kind can be cancelled until the stay date begins
+**in the hotel's own time zone** (each hotel has an IANA zone, e.g. `Asia/Tokyo`). Protected stays get the
+room price back and the fee is kept; non-refundable stays free the room but keep the charge.
+- **The fee is a price, so Pricing owns it.** It is stored in the quote, so it is locked for 15 minutes like the room price.
+- **The deadline is computed once, at booking time, and stored** (`cancel_deadline`). Later changes to a hotel's zone
+  or policy don't rewrite what the guest agreed to, and the cancel `UPDATE` re-checks `cancel_deadline > now` itself,
+  so a request that arrives a moment too late can't slip through between the check and the write.
+- **Two steps, like payment.** One transaction marks the reservation `CANCELLED`, records `refund_amount` with
+  `refund_status = PENDING`, and puts the room back on sale. Only then is the provider asked for the refund, keyed
+  `refund:<reservationId>`. If that call fails or times out, the refund stays `PENDING` and the reconciler retries the
+  same key until the provider has it. A refund can be sent any number of times but is paid out once.
+- **Provider-side guard.** The simulated provider locks the charge row (`SELECT … FOR UPDATE`) while checking that refunds
+  never exceed what was charged. This is the one place a row lock is the simple answer: two different refunds of one charge must
+  be checked one after the other.
+- A reservation whose payment outcome is still unknown (`PAYMENT_PENDING`) can't be cancelled (`409 PAYMENT_IN_PROGRESS`).
+  We'd otherwise be refunding a charge we don't know exists.

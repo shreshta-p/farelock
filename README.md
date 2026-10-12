@@ -45,7 +45,7 @@ flowchart LR
 | Service | Owns | Main endpoints |
 |---|---|---|
 | **Pricing** (`pricing-service/`) | `pricing` schema: base rates, quotes | `GET /api/prices`, `POST /api/quotes`, `GET /api/quotes/{id}` |
-| **Reservation** (`reservation-service/`) | `reservation` schema: users, sessions, hotels, inventory, reservations, idempotency keys. `payment_provider` schema: the simulated provider's charges | `/api/auth/*`, `/api/me`, `/api/hotels`, `/api/reservations`, `/api/reservations/{id}/payment` |
+| **Reservation** (`reservation-service/`) | `reservation` schema: users, sessions, hotels, inventory, reservations, idempotency keys. `payment_provider` schema: the simulated provider's charges and refunds | `/api/auth/*`, `/api/me`, `/api/hotels`, `/api/reservations`, `/api/reservations/{id}/payment`, `/api/reservations/{id}/cancel` |
 
 Each service logs in to Postgres with its own role and can only see its own schema(s). The services talk over REST with
 short timeouts. There is no message broker, gateway or service discovery, because none is needed at this size.
@@ -103,21 +103,24 @@ curl -c jar -H 'Content-Type: application/json' localhost:8082/api/auth/register
 
 # Lock a price for 15 minutes
 curl -H 'Content-Type: application/json' localhost:8081/api/quotes -d '{"roomTypeId":301,"stayDate":"2026-11-20"}'
-# -> {"id":"<quoteId>","amount":793.50,"currency":"EUR","expiresAt":"...","expired":false}   (690 base x 1.15 Friday)
+# -> {"id":"<quoteId>","amount":793.50,"protectionFee":79.35,"currency":"EUR","expiresAt":"...","expired":false}   (690 base x 1.15 Friday)
 
 # Hold the room. Repeat this exact call: you get the same reservation back.
 curl -b jar -H 'Content-Type: application/json' -H 'Idempotency-Key: 6f1c-checkout-1' localhost:8082/api/reservations \
-  -d '{"quoteId":"<quoteId>","roomTypeId":301,"stayDate":"2026-11-20","guestName":"Ada Lovelace"}'
+  -d '{"quoteId":"<quoteId>","roomTypeId":301,"stayDate":"2026-11-20","guestName":"Ada Lovelace","cancellationProtection":true}'
 
 # Pay (simulated): tok_approve | tok_decline | tok_timeout | tok_lost_response | tok_unknown
 curl -b jar -H 'Content-Type: application/json' localhost:8082/api/reservations/<id>/payment -d '{"paymentToken":"tok_approve"}'
+
+# Cancel. Before check-in day starts at the hotel; protected stays get the room price back
+curl -b jar -X POST localhost:8082/api/reservations/<id>/cancel
 
 curl -b jar localhost:8082/api/reservations
 ```
 
 Errors always look like `{"code": "SOLD_OUT", "message": "..."}`. The main codes are: `SOLD_OUT` (409),
 `IDEMPOTENCY_KEY_REUSED` (409), `REQUEST_IN_PROGRESS` (409), `QUOTE_EXPIRED` (422), `PRICING_UNAVAILABLE` (503),
-`PAYMENT_DECLINED` (402), `HOLD_EXPIRED` (409), `DATABASE_UNAVAILABLE` (503) and `UNAUTHENTICATED` (401).
+`PAYMENT_DECLINED` (402), `HOLD_EXPIRED` (409), `CANCELLATION_CLOSED` (409), `PAYMENT_IN_PROGRESS` (409), `DATABASE_UNAVAILABLE` (503) and `UNAUTHENTICATED` (401).
 
 ---
 
@@ -130,7 +133,10 @@ stateDiagram-v2
     HELD --> RELEASED: hold expired (10 min)
     PAYMENT_PENDING --> CONFIRMED: provider APPROVED
     PAYMENT_PENDING --> RELEASED: provider DECLINED,<br/>or no record after 2 min
+    HELD --> CANCELLED: POST /cancel
+    CONFIRMED --> CANCELLED: POST /cancel<br/>(before check-in day, hotel time)
     CONFIRMED --> [*]
+    CANCELLED --> [*]
     RELEASED --> [*]
 ```
 
@@ -138,7 +144,8 @@ stateDiagram-v2
 2. **Reserve.** The reservation service claims the `Idempotency-Key`, fetches the quote with **no transaction open**, then in **one transaction** inserts the reservation, records the response for replays, and takes a room with a single conditional `UPDATE`.
 3. **Pay.** The reservation moves to `PAYMENT_PENDING` first, so hold expiry can't give the room away mid-payment. Then the provider is called with a 2-second timeout, using the reservation id as its idempotency key.
 4. **Outcome.** Approved means `CONFIRMED`. Declined means `RELEASED` and the room goes back on sale. Timeout or unknown returns `202` and the UI shows "Confirming your payment…" while it polls.
-5. **Reconcile.** Every 10 seconds a job asks the provider about stuck payments and applies what it says: confirm, release, or keep waiting. The same job releases expired holds and keeps inventory stocked.
+5. **Reconcile.** Every 10 seconds a job asks the provider about stuck payments and applies what it says: confirm, release, or keep waiting. The same job releases expired holds, retries unconfirmed refunds and keeps inventory stocked.
+6. **Cancel.** Allowed until the stay date begins in the hotel's time zone. At checkout the guest picks **free cancellation** (+10%, quoted by Pricing) or **non-refundable**. Cancelling frees the room in one transaction that also records any refund owed (`PENDING`). The provider is then asked to refund the room price (the fee is kept), keyed `refund:<id>`, so retries by the request or the reconciler pay out once. Non-refundable stays keep the charge.
 
 ### Concurrency: why 100 buyers can't get 11 rooms
 
@@ -177,6 +184,7 @@ reservation's state plus the provider's per-reservation key, so a reservation ca
 | Payment timeout | `202`. Released only after the provider still has no record 2 minutes later | `PaymentTest` |
 | Lost response (charged, answer lost) | Reconciler finds `APPROVED` and confirms, with exactly one charge | `PaymentTest`, k6 |
 | Crash after approval, before confirm | Same reconciliation path | `PaymentTest` |
+| Refund call fails or times out | Refund stays `PENDING`, the reconciler retries the same refund key, and the provider pays out once | `CancellationTest` |
 | Insert fails after taking a room | The transaction rolls back and the inventory is unchanged | `ReservationTest` |
 | Database unreachable | Hikari gives up after 2s and returns `503 DATABASE_UNAVAILABLE`. Recovers on its own when Postgres returns | verified manually |
 
@@ -262,14 +270,14 @@ schemas, sessions over JWTs, conditional updates over locks, idempotency in the 
 retries, and coroutines only where they help (concurrent fan-out, a bounded payment call).
 
 **Limitations**
-- One night per booking, one room per booking, no cancellation.
+- One night per booking, one room per booking. Cancellation is all-or-nothing (no partial penalties).
 - One Postgres instance for both services (separate schemas and roles, shared failure domain).
-- The payment provider is simulated in-process. A real provider could settle after we time out, which would need a void/refund call.
+- The payment provider is simulated in-process. A charge that settles after we released the room (timeout, then late approval) is not auto-refunded yet.
 - `/internal/jobs/run` (manual job trigger) is unauthenticated and meant only for local demos.
 - No rate limiting on login, and no email verification or password reset.
 - Benchmarks are from one laptop. A hot single-night row is the worst case on purpose.
 
-**Next steps:** multi-night stays (one inventory row per night in the same transaction), cancellations and refunds,
+**Next steps:** multi-night stays (one inventory row per night in the same transaction), auto-refunding late-settling charges,
 login rate limiting, a transactional outbox for confirmation emails, splitting very hot inventory rows into buckets,
 and container images for both services.
 

@@ -16,6 +16,7 @@ export type Hotel = {
   amenities: string[]
   images: string[]
   sourceUrl: string | null
+  timezone: string
 }
 
 export type RoomType = {
@@ -40,26 +41,37 @@ export type Quote = {
   hotelId: number
   stayDate: string
   amount: number
+  /** Price of optional free cancellation, locked with the room price. */
+  protectionFee: number
   currency: string
   expiresAt: string
   expired: boolean
 }
 
-export type ReservationStatus = 'HELD' | 'PAYMENT_PENDING' | 'CONFIRMED' | 'RELEASED'
+export type ReservationStatus = 'HELD' | 'PAYMENT_PENDING' | 'CONFIRMED' | 'RELEASED' | 'CANCELLED'
 
 export type Reservation = {
   id: string
   hotelId: number
   hotelName: string
+  hotelTimezone: string
   roomTypeId: number
   roomName: string
   stayDate: string
   guestName: string
+  /** Room price. `total` adds the protection fee when one was bought. */
   amount: number
+  protectionFee: number | null
+  total: number
   currency: string
   status: ReservationStatus
   releaseReason: 'EXPIRED' | 'DECLINED' | 'PAYMENT_NOT_FOUND' | null
   holdExpiresAt: string
+  /** Cancellation closes when the stay date begins at the hotel. */
+  cancelDeadline: string
+  cancelledAt: string | null
+  refundAmount: number | null
+  refundStatus: 'NONE' | 'PENDING' | 'REFUNDED' | null
   createdAt: string
 }
 
@@ -118,11 +130,13 @@ export const api = {
 
   /** The Idempotency-Key makes retries (double clicks, refreshes, flaky networks) safe. */
   createReservation: (
-    body: { quoteId: string; roomTypeId: number; stayDate: string; guestName: string },
+    body: { quoteId: string; roomTypeId: number; stayDate: string; guestName: string; cancellationProtection: boolean },
     idempotencyKey: string,
   ) => post<Reservation>('/api/reservations', body, { 'Idempotency-Key': idempotencyKey }),
   pay: (reservationId: string, paymentToken: PaymentToken) =>
     post<Reservation>(`/api/reservations/${reservationId}/payment`, { paymentToken }),
+  /** Safe to repeat: the server decides from the reservation's state, and refunds are keyed. */
+  cancel: (reservationId: string) => post<Reservation>(`/api/reservations/${reservationId}/cancel`, {}),
   reservations: () => request<Reservation[]>('/api/reservations'),
   reservation: (id: string) => request<Reservation>(`/api/reservations/${id}`),
 }

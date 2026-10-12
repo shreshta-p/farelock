@@ -13,6 +13,13 @@ export function formatDate(isoDate: string, style: 'long' | 'short' = 'long') {
   return new Intl.DateTimeFormat('en-GB', options).format(new Date(`${isoDate}T00:00:00Z`))
 }
 
+/** An instant shown as wall-clock time in a given zone, e.g. the hotel's: "Fri 24 Oct, 00:00". */
+export function formatInstantIn(instant: string, timeZone: string) {
+  return new Intl.DateTimeFormat('en-GB', {
+    weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone,
+  }).format(new Date(instant))
+}
+
 export function isoDate(date: Date) {
   return date.toISOString().slice(0, 10)
 }
